@@ -1,0 +1,195 @@
+﻿@model AgroExpress.DataLayer.ViewModel.MedicationListView
+
+@{
+    ViewBag.Title = "Animal Vaccine List";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@*<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />*@
+<script src="~/Scripts/jquery.min.js"></script>
+<h2 style="text-align:center">Animal Medication List</h2>
+<br />
+<style>
+
+    input, select {
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+    }
+
+    th, td {
+        text-align: center;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <script type="text/javascript">
+        $(function () {
+            $("#VAnimalTypeId").change(function () {
+
+                var AnimalTypeID = $("#VAnimalTypeId :selected").val();
+                var url = '../Animal/GetAnimalListForType';
+                var data1 = { "animalTypeID": AnimalTypeID };
+
+                $.post(url, data1, function (data) {
+                    var items = [];
+                    items.push("<option value=" + null + ">" + "Select Animal" + "</option>");
+                    for (var i = 0; i < data.length; i++) {
+
+                        items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                    }
+                    $("#VAnimalId").html(items.join(' '));
+                })
+            });
+        });
+    </script>
+    <div class="row">
+        <div class="col-md-3">
+
+        </div>
+        <div class="col-md-3">
+            <label>Animal Category</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(model => model.VAnimalTypeId, Model.VAnimalTypes, "Select Category", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.VAnimalTypeId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label>Select an Animal</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(model => model.VAnimalId, Model.vacanimallist, "Select Animal", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="col-md-3">
+
+        </div>
+    </div>
+
+
+    <div class="row">
+
+        <div class="col-md-3">
+
+        </div>
+
+        <div class="col-md-3">
+            <label>Date From</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.VaccinationDateMin, new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(model => model.VaccinationDateMin, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label>Date To</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.VaccinationDateMax, new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(model => model.VaccinationDateMax, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+
+        <div class="col-md-3">
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+        </div>
+        <div class="col-md-3">
+            <label>Medicine name</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.MedicineNames, new { @class = "form-control", placeholder = "Medicine Name" })
+                @Html.ValidationMessageFor(model => model.MedicineNames, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-3">
+            <label>&nbsp;</label>
+            <div class="form-group has-feedback">
+                <button type="submit" class="btn btn-primary btn-block btn-flat">Search</button>
+            </div>
+        </div>
+        <div class="col-md-3">
+        </div>
+    </div>
+    <br />
+
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th id="table-header">
+                Animal Code Name
+            </th>
+            <th id="table-header">
+                Medicine Name
+            </th>
+            <th id="table-header">
+                Medication Date
+            </th>
+            <th id="table-header">
+                Dose
+            </th>
+            <th id="table-header">
+                Comments
+            </th>
+            <th id="table-header">
+                Operator Name
+            </th>
+            @{
+                if (ViewContext.Controller.IsSysAdmin())
+                {
+                    <th>Operation</th>
+                }
+            }
+        </tr>
+
+        @foreach (var item in Model.medicinelist)
+        {
+            <tr>
+                @Html.HiddenFor(modelItem => item.medicationId)
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.AnimalCodeName)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.MedicineName)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.MedicationDate)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.Dose)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.Comments)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.OperatorName)
+                </td>
+                @{
+                    if (ViewContext.Controller.IsSysAdmin())
+                    {
+                        <td id="table-header">
+                            @Html.ActionLink("Delete", "MedicationDelete", new { id = item.medicationId, date = item.MedicationDate })
+                        </td>
+                    }
+                }
+
+            </tr>
+        }
+
+    </table>
+}
+

@@ -1,0 +1,45 @@
+﻿@model AgroExpress.DataLayer.Models.AnimalType
+@{
+    ViewBag.Title = "Add New Animal Type";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 style="text-align:center">Add a New Animal Type</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    if (ViewBag.success != null)
+    {
+        <script>
+            alert("Animal Type has been added Successfully"); // display string message
+        </script>
+    }
+    <style>
+        .register-box {
+            margin-top: 1%;
+        }
+    </style>
+    <div class="register-box">
+        <div class="register-box-body">
+
+            <div class="form-group has-feedback">
+                <label>Animal Category Name</label>
+                @Html.EditorFor(model => model.AnimalTypeName, new { htmlAttributes = new { @class = "form-control", placeholder = "Animal Category Name" } })
+                @Html.ValidationMessageFor(model => model.AnimalTypeName, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="row">
+                <div class="col-xs-8">
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">Add</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </div>
+        <!-- /.form-box -->
+    </div>
+    <!-- /.form-box -->
+}

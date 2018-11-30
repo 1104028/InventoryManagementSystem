@@ -1,0 +1,102 @@
+﻿@model AgroExpress.DataLayer.ViewModel.AnimalVaccineAdd
+@{
+    /**/
+
+    ViewBag.Title = "Add Animal Vaccine Info";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 style="text-align:center">Add Animal Vaccine Info</h2>
+<script src="~/Scripts/jquery.min.js"></script>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    if (ViewBag.success != null)
+    {
+        <script>
+            alert("Animal Vaccine has been added Successfully"); // display string message
+        </script>
+    }
+    <style>
+        .register-box {
+            margin-top: 1%;
+        }
+    </style>
+
+    <script type="text/javascript">
+        $(function () {
+            $("#AnimalTypeId").change(function () {
+
+                var animaltypeid = $("#AnimalTypeId :selected").val();
+                var url = '../Animal/AnimalList';
+                var data1 = { "animaltypeid": animaltypeid };
+
+                $.post(url, data1, function (data) {
+                    var items = [];
+                    items.push("<option value=>" + "- Please select a Animal -" + "</option>");
+                    for (var i = 0; i < data.length; i++) {
+
+                        items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                    }
+
+                    $("#AnimalId").html(items.join(' '));
+
+
+                })
+            });
+
+        });
+    </script>
+    <div class="register-box">
+        <div class="register-box-body">
+
+            <div class="form-group has-feedback">
+                <label>Vaccine Name</label>
+                @Html.EditorFor(model => model.VaccineName, new { htmlAttributes = new { @class = "form-control", placeholder = "Vaccine Name" } })
+                @Html.ValidationMessageFor(model => model.VaccineName, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Animal Types</label>
+                @Html.DropDownListFor(m => m.AnimalTypeId, Model.AnimalTypes, "- Please select a Animal Type -", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AnimalTypeId, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Animals</label>
+                @Html.DropDownListFor(m => m.AnimalId, Model.animallist, "- Please select a Animal -", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AnimalId, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Vaccination Date</label>
+                @Html.EditorFor(model => model.VaccinationDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                @Html.ValidationMessageFor(model => model.VaccinationDate, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Next Vaccination Date</label>
+                @Html.EditorFor(model => model.NextVaccationDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                @Html.ValidationMessageFor(model => model.NextVaccationDate, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Comments</label>
+                @Html.EditorFor(model => model.Comments, new { htmlAttributes = new { @class = "form-control", placeholder = "Comments" } })
+                @Html.ValidationMessageFor(model => model.Comments, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="row">
+                <div class="col-xs-8">
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">Add</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </div>
+        <!-- /.form-box -->
+    </div>
+    <!-- /.form-box -->
+}

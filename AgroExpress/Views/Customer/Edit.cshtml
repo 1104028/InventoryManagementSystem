@@ -1,0 +1,163 @@
+﻿@model AgroExpress.DataLayer.ViewModel.CustomerEdit
+@{
+    ViewBag.Title = "Update Customer Info";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 style="text-align:center">Update Customer Info</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    if (ViewBag.success != null)
+    {
+        <script>
+            alert("Customer has been updated Successfully"); // display string message
+        </script>
+    }
+    <style>
+        .register-box {
+            margin-top: 1%;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            $("#SalePointId").change(function () {
+
+                var SalePointName = $("#SalePointId :selected").text();
+                var url = '../Customer/SalePointList';
+                var data1 = { "SalePointName": SalePointName };
+
+                $.post(url, data1, function (data) {
+                    var items = [];
+                    items.push("<option value=" + 0 + ">" + "- Please select a Area -" + "</option>");
+                    for (var i = 0; i < data.length; i++) {
+
+                        items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                    }
+
+                    $("#AreaId").html(items.join(' '));
+
+
+                })
+            });
+
+        });
+
+        $(function () {
+            $("#AreaId").change(function () {
+
+                var AreaName = $("#AreaId :selected").text();
+                var url = '../Customer/AreaList';
+                var data1 = { "AreaName": AreaName };
+
+                $.post(url, data1, function (data) {
+                    var items = [];
+                    items.push("<option value=" + 0 + ">" + "- Please select a Sub Area -" + "</option>");
+                    for (var i = 0; i < data.length; i++) {
+
+                        items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                    }
+
+                    $("#SubAreaId").html(items.join(' '));
+
+
+                })
+            });
+
+        });
+
+    </script>
+    <div class="register-box">
+        <div class="register-box-body">
+            @Html.HiddenFor(model => model.PKCustomerId)
+            @Html.HiddenFor(model => model.LoginUserID)
+            <div class="form-group has-feedback">
+                <label>Full Name</label>
+                @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control", placeholder = "Full name" } })
+                @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Address</label>
+                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", type = "textarea", rows = "4", cols = "40", Placeholder = "Address" } })
+                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Mobile Number</label>
+                @Html.EditorFor(model => model.Mobile, new { htmlAttributes = new { @class = "form-control", Placeholder = "Mobile No." } })
+                @Html.ValidationMessageFor(model => model.Mobile, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Sale Point</label>
+                @Html.DropDownListFor(m => m.SalePointId, Model.salepointlist, "- Please select a Sale Point -", new { @class = "form-control" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Area</label>
+                @Html.DropDownListFor(m => m.AreaId, Model.arealist, "- Please select a Area -", new { @class = "form-control" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Sub Area</label>
+                @Html.DropDownListFor(m => m.SubAreaId, Model.subarealist, "- Please select a Sub Area -", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.SubAreaId, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Rate</label>
+                @Html.EditorFor(model => model.Rate, new { htmlAttributes = new { @class = "form-control", placeholder = "Rate", type = "number" } })
+                @Html.ValidationMessageFor(model => model.Rate, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Service Charge</label>
+                @Html.EditorFor(model => model.ServiceCharge, new { htmlAttributes = new { @class = "form-control", type = "number" } })
+                @Html.ValidationMessageFor(model => model.ServiceCharge, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Total Bill</label>
+                @Html.EditorFor(model => model.TotalBill, new { htmlAttributes = new { @class = "form-control", type = "number" } })
+                @Html.ValidationMessageFor(model => model.TotalBill, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Total Paid</label>
+                @Html.EditorFor(model => model.TotalPaid, new { htmlAttributes = new { @class = "form-control", type = "number" } })
+                @Html.ValidationMessageFor(model => model.TotalPaid, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group has-feedback">
+                <label>SMS</label> &nbsp; &nbsp;
+                @Html.EditorFor(model => model.SMS)
+
+            </div>
+            <div class="form-group has-feedback">
+                <label>User Name</label>
+                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Password</label>
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+
+
+            <div class="row">
+                <div class="col-xs-8">
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">Update</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </div>
+        <!-- /.form-box -->
+    </div>
+    <!-- /.form-box -->
+}

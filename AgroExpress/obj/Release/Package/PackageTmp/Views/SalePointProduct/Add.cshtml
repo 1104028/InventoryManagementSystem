@@ -1,0 +1,258 @@
+﻿@model AgroExpress.DataLayer.ViewModel.SalePointProductAdd
+@{
+    ViewBag.Title = "Sale Point";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<h2 style="text-align:center">Add Product in Sale Point</h2>
+@*<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />*@
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <script type="text/javascript">
+        function ShowRow(ID) {
+            ID += 1;
+           
+            var rw = document.getElementById("row " + ID);
+            rw.style.display = 'table-row';
+        }
+
+        function Validate(index, size) {
+           
+            var selected = document.getElementById("TransferedProductInfo_" + index + "__ProductId");
+            var SelectedProduct = selected.options[selected.selectedIndex].value;
+            var validat = true;
+            for (var i = 0; i < size; i++) {
+                if (i != index) {
+
+                    var alreadyselected = document.getElementById("TransferedProductInfo_" + i + "__ProductId");
+                    if (alreadyselected.selectedIndex != null) {
+
+                        var alreadySelectedProduct = alreadyselected.options[alreadyselected.selectedIndex].value;
+                        if (alreadySelectedProduct == SelectedProduct) {
+                            selected.options[selected.selectedIndex].selected = false;
+                            $("#TransferedProductInfo_" + index + "__Amount").val(null);
+                           
+                            validat = false;
+                            alert('This product already selected at item no ' + (i + 1));
+                            break;
+                        }
+                    }
+                   
+
+                }
+            }
+            if (validat) {
+
+                var url = '../Product/Stock';
+                var data1 = { "ProductID": SelectedProduct };
+
+                $.post(url, data1, function (data) {
+
+                  //  console.log(index);
+                    //var selectedAmoun = document.getElementById("TransferedProductInfo_" + index + "__Amount");
+
+                    $("#TransferedProductInfo_" + index + "__Amount").attr({
+                        "max": data,
+                        "min": 0,
+                        
+                       
+                    });
+                    $("#TransferedProductInfo_" + index + "__Amount").val(null);
+                  
+                   // console.log(data);
+                   // console.log($("#TransferedProductInfo_" + index + "__Amount").attr('max'));
+                    //TransferedProductInfo_2__Amount
+                })
+                
+                
+            }
+        }
+
+        function AmountValidate(id) {
+
+            var selectedp = document.getElementById("TransferedProductInfo_" + id + "__ProductId");
+
+            var SelectedProduct = selectedp.options[selectedp.selectedIndex].value;
+
+
+
+            var selected = document.getElementById("TransferedProductInfo_" + id + "__Amount");
+            if (SelectedProduct == null || SelectedProduct == 0) {
+                selected.value = null;
+                alert('Please select product first');
+                return;
+            }
+            var val = parseFloat(selected.value);
+           
+            var maximum = $("#TransferedProductInfo_" + id + "__Amount").attr('max');
+            maximum = parseFloat(maximum);
+            
+            if (val > maximum) {
+                selected.value = maximum;
+                alert('Insufficient stock!!!!! This product have only ' + maximum+'');
+            }
+        }
+    </script>
+    if (ViewBag.message != null)
+    {
+        <script>
+            alert(ViewBag.message);
+        </script>
+    }
+
+    <p style=" padding-left: 4%;
+    padding-bottom: 1%;
+    padding-top: 1%;
+    font-weight: 800;">
+
+    </p>
+    <style>
+
+        input,textarea {
+            display: block;
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+        }
+        th,td {
+            text-align:center;
+        }
+    </style>
+    <div class="row">
+
+        <div class="col-md-3"></div>
+        <div class="col-md-3">
+            <div class="form-group has-feedback">
+                <label>Sale point</label>
+                @Html.DropDownListFor(m => m.SalePointId, Model.salepointlist, "- Please select a Salepoint -", new { @class = "form-control" })
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group has-feedback">
+                <label>Date</label>
+                @Html.EditorFor(m => m.Date, new { @class = "form-control", type = "number" })
+
+            </div>
+
+        </div>
+        <div class="col-md-3"></div>
+
+    </div>
+    if(ViewBag.message!=null)
+    {
+        <script>
+            alert(@ViewBag.message);
+        </script>
+    }
+    int serialnumber = 1;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th id="table-header">
+
+                &nbsp;
+            </th>
+            <th id="table-header">
+
+                Item No
+            </th>
+            <th id="table-header">
+
+                Products
+            </th>
+
+            <th id="table-header">
+                Amount
+            </th>
+           <th></th>
+
+            
+
+        </tr>
+        @for (int i = 0; i < Model.TransferedProductInfo.Count; i++)
+        {
+            serialnumber = i + 1;
+            if (i == 0)
+            {
+        <tr id="row @i" style="display:table-row">
+            <td id="table-header">
+                &nbsp;
+            </td>
+            <td id="table-header">
+
+                <labe>@serialnumber</labe>
+            </td>
+            <td id="table-header">
+                Milk
+                @Html.HiddenFor(modelItem => Model.TransferedProductInfo[i].ProductId)
+            </td>
+
+            <td id="table-header">
+                @Html.EditorFor(modelItem => Model.TransferedProductInfo[i].Amount)
+                @Html.ValidationMessageFor(modelItem => Model.TransferedProductInfo[i].Amount, "", new { @class = "text-danger" })
+            </td>
+            <td>
+                @if (i != Model.TransferedProductInfo.Count - 1)
+                {
+                    <button onclick="ShowRow(@i)" type="button"> <i class="fa fa-plus"></i> </button>
+                }
+
+            </td>
+            <td colspan="4">
+                &nbsp;
+            </td>
+            
+        </tr>
+            }
+            else
+            {
+        <tr id="row @i" style="display:none">
+            <td id="table-header">
+                &nbsp;
+            </td>
+            <td id="table-header">
+
+                <labe>@serialnumber</labe>
+            </td>
+            <td id="table-header">
+                @Html.DropDownListFor(modelItem => Model.TransferedProductInfo[i].ProductId, Model.product, "- Please select a Product -", new { @class = "form-control", onchange = "Validate(" + i + "," + Model.TransferedProductInfo.Count + ")" })
+                @*@Html.EditorFor(modelItem => Model.ProductionInfo[i].ProductId)*@
+                @Html.ValidationMessageFor(model => Model.TransferedProductInfo[i].ProductId, "", new { @class = "text-danger" })
+
+            </td>
+
+            <td id="table-header" width="50%">
+                @Html.TextAreaFor(modelItem => Model.TransferedProductInfo[i].Amount, new { onchange = "AmountValidate(" + i + ")" })
+                @Html.ValidationMessageFor(modelItem => Model.TransferedProductInfo[i].Amount, "", new { @class = "text-danger" })
+            </td>
+            <td>
+                @if (i != Model.TransferedProductInfo.Count - 1)
+                {
+                    <button onclick="ShowRow(@i)" type="button"> <i class="fa fa-plus"></i> </button>
+                }
+
+
+            </td>
+            <td colspan="3"></td>
+        </tr>
+            }
+
+        }
+
+                <tr>
+                    <td colspan="3"></td>
+                    <td>
+                        <button type="submit" name="Submit" value="Add" style="margin-left:20%;width:50%;" class="btn btn-primary btn-block btn-flat">ADD</button>
+                    </td>
+                    <td colspan="3"></td>
+                </tr>
+    </table>
+}

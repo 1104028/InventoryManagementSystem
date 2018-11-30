@@ -1,0 +1,47 @@
+﻿@model IEnumerable<AgroExpress.DataLayer.Models.SubArea>
+
+@{
+
+    ViewBag.Title = "Disabled Sub Area List";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />
+<h2 id="title">Disabled Sub Area List</h2>
+
+<p id="create">
+    @Html.ActionLink("Create New", "Add")
+</p>
+<table class="table table-bordered table-striped">
+    <tr>
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.SubAreaName)
+        </th>
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.AreaId)
+        </th>
+        <th id="table-header">Operation</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => item.SubAreaName)
+            </td>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => item.AreaId)
+            </td>
+
+            <td id="table-header">
+                @Html.ActionLink("Edit", "Edit", new { id = item.PKSubAreaId }) |
+                @Html.ActionLink(
+                                 "Enable",
+                                 "Enable",
+                                 new { id = item.PKSubAreaId },
+                                 new { onclick = "return confirm('Are you sure you wish to enable this Sub Area?');" })
+            </td>
+        </tr>
+    }
+
+</table>

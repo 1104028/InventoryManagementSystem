@@ -1,0 +1,546 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Agro Express | Dashboard</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <!-- Ionicons -->
+
+    <link href="~/Content/ionicons.min.css" rel="stylesheet" />
+    <!-- Theme style -->
+
+    <link href="~/Content/AdminLTE.min.css" rel="stylesheet" />
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+
+    <link href="~/Content/_all-skins.min.css" rel="stylesheet" />
+    <!-- Morris chart -->
+
+    <link href="~/Content/morris.css" rel="stylesheet" />
+    <!-- jvectormap -->
+
+    <link href="~/Content/jquery-jvectormap.css" rel="stylesheet" />
+    <!-- Date Picker -->
+
+    <link href="~/Content/bootstrap-datepicker.min.css" rel="stylesheet" />
+
+    <!-- bootstrap wysihtml5 - text editor -->
+
+    <link href="~/Content/bootstrap3-wysihtml5.min.css" rel="stylesheet" />
+
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="@Url.Action("Index", "Administrator")" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><b>A</b>Ex</span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><b>Agro</b>Express</span>
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <div class="navbar-custom-menu">
+                    @{
+                        if (ViewContext.Controller.IsSysAdmin())
+                        {
+                            <ul class="nav navbar-nav">
+                                <!-- User Account: style can be found in dropdown.less -->
+                                <li class="dropdown user user-menu">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                        <span class="hidden-xs">SMS balance remaining: @ViewContext.Controller.SMSBalance() tk</span>
+                                    </a>
+
+                                </li>
+                            </ul>
+                        }
+                    }
+
+                    <ul class="nav navbar-nav">
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <span class="hidden-xs">@HttpContext.Current.User.Identity.Name</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a href="@Url.Action("ChangePassword", "Home")" class="btn btn-default btn-flat">Change password</a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a href="@Url.Action("Logout", "Home")" class="btn btn-default btn-flat">Sign out</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                </div>
+            </nav>
+        </header>
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu" data-widget="tree">
+                    @{
+                        if (ViewContext.Controller.IsSysAdmin())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-users"></i>
+                                    <span>Admin</span>
+
+                                </a>
+                                <ul class="treeview-menu">
+                                    <li><a href="@Url.Action("Registration", "Home")"><i class="fa fa-plus"></i>Add Admin</a></li>
+                                    <li><a href="@Url.Action("EnabledList", "Home")"><i class="fa fa-list"></i>Enabled Admin List</a></li>
+                                    <li><a href="@Url.Action("DisabledList", "Home")"><i class="fa fa-list"></i>Disabled Admin List</a></li>
+                                </ul>
+                            </li>
+                        }
+                    }
+
+
+                    @{
+                        if (!ViewContext.Controller.IsDeliveryBoy() && !ViewContext.Controller.IsCustomer())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-pie-chart"></i>
+                                    <span>Animal</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+                                    @{
+                                        if (ViewContext.Controller.IsSysAdmin())
+                                        {
+                                            <li><a href="@Url.Action("Add", "AnimalType")"><i class="fa fa-plus"></i> Add Animal Type</a></li>
+                                        }
+                                    }
+                                    <li><a href="@Url.Action("List", "AnimalType")"><i class="fa fa-plus"></i>Animal Type List</a></li>
+                                    @{
+                                        if (ViewContext.Controller.IsSysAdmin())
+                                        {
+                                            <li><a href="@Url.Action("Add", "Animal")"><i class="fa fa-plus"></i> Add Animal</a></li>
+                                        }
+                                    }
+
+                                    <li><a href="@Url.Action("List", "Animal")"><i class="fa fa-list"></i>Enabled Animal List</a></li>
+                                    <li><a href="@Url.Action("DisabledAnimalList", "Animal")"><i class="fa fa-list"></i>Disabled Animal List</a></li>
+                                    @{
+                                        if (ViewContext.Controller.IsSysAdmin() || ViewContext.Controller.IsFirmManager())
+                                        {
+                                            <li><a href="@Url.Action("WeightAdd", "Animal")"><i class="fa fa-plus"></i> Add Weight</a></li>
+                                        }
+                                    }
+
+                                    <li><a href="@Url.Action("WeightList", "Animal")"><i class="fa fa-list"></i>Weighted Animal List</a></li>
+
+                                    @{
+                                        if (ViewContext.Controller.IsSysAdmin() || ViewContext.Controller.IsFirmManager())
+                                        {
+                                            <li><a href="@Url.Action("AnimalTypeList", "Animal")"><i class="fa fa-plus"></i>Add Vaccination Information</a></li>
+                                        }
+                                    }
+
+
+                                    <li><a href="@Url.Action("VaccineList", "Animal")"><i class="fa fa-list"></i>Animal Vaccination List</a></li>
+
+                                    @{
+                                        if (ViewContext.Controller.IsSysAdmin() || ViewContext.Controller.IsFirmManager())
+                                        {
+                                            <li><a href="@Url.Action("MedicineAdd", "Animal")"><i class="fa fa-plus"></i>Add Medication Information</a></li>
+                                        }
+                                    }
+
+                                    <li><a href="@Url.Action("MedicationList", "Animal")"><i class="fa fa-list"></i>Animal Medication List</a></li>
+
+
+                                </ul>
+                            </li>
+                        }
+                    }
+
+                    @{
+                        if (ViewContext.Controller.IsSysAdmin())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-map"></i>
+                                    <span>Area</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+                                    <li><a href="@Url.Action("Add", "Area")"><i class="fa fa-plus"></i>Add Area</a></li>
+                                    <li><a href="@Url.Action("EnabledArea", "Area")"><i class="fa fa-list"></i>Enabled Area List</a></li>
+                                    <li><a href="@Url.Action("DisabledArea", "Area")"><i class="fa fa-list"></i>Disabled Area List</a></li>
+                                </ul>
+                            </li>
+                        }
+                    }
+
+
+                    @{
+                        if (ViewContext.Controller.IsSysAdmin() || ViewContext.Controller.IsFirmManager())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-warning"></i>
+                                    <span>Cow Heat</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+
+                                    <li><a href="@Url.Action("CowHeatAdd", "Animal")"><i class="fa fa-plus"></i>Add Cow Heat Information</a></li>
+
+                                    <li><a href="@Url.Action("CowHeatList", "Animal")"><i class="fa fa-edit"></i>Cow Heat Information List</a></li>
+
+                                </ul>
+                            </li>
+                        } }
+                    @{
+                        if (ViewContext.Controller.IsSysAdmin())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-users"></i>
+                                    <span>Customers</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+                                    <li><a href="@Url.Action("Registration", "Customer")"><i class="fa fa-plus"></i>Add Customer</a></li>
+                                    <li><a href="@Url.Action("EnabledCustomer", "Customer")"><i class="fa fa-list"></i> Enabled Customer List</a></li>
+                                    <li><a href="@Url.Action("DisabledCustomer", "Customer")"><i class="fa fa-list"></i>Disabled Customer List</a></li>
+                                    <li><a href="@Url.Action("CustomerDueList", "Customer")"><i class="fa fa-list"></i>Customer Due List</a></li>
+                                </ul>
+                            </li>
+                        }
+                    }
+
+                    @{
+                        if (ViewContext.Controller.IsCustomer())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-users"></i>
+                                    <span>Transaction History</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+
+                                    <li><a href="@Url.Action("TransactionHistory", "Customer")"><i class="fa fa-list"></i>Customer Transaction History</a></li>
+                                </ul>
+                            </li>
+                        }
+                    }
+
+                    @{
+                        if (ViewContext.Controller.IsSysAdmin())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-users"></i>
+                                    <span>Delivery Boys</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+                                    <li><a href="@Url.Action("Registration", "DeliveryBoy")"><i class="fa fa-plus"></i>Add Delivery Boy</a></li>
+                                    <li><a href="@Url.Action("EnabledList", "DeliveryBoy")"><i class="fa fa-list"></i>Enabled Delivery Boy List</a></li>
+                                    <li><a href="@Url.Action("DisabledList", "DeliveryBoy")"><i class="fa fa-minus"></i> Disabled Delivery Boy List</a></li>
+                                </ul>
+                            </li>
+                        }
+                    }
+
+                    @{
+                        if (ViewContext.Controller.IsSysAdmin())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-users"></i>
+                                    <span>Farm Manager</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+                                    <li><a href="@Url.Action("Registration", "FirmManager")"><i class="fa fa-plus"></i>Add Farm Manager</a></li>
+                                    <li><a href="@Url.Action("EnabledList", "FirmManager")"><i class="fa fa-list"></i>Enabled Farm Manager List</a></li>
+                                    <li><a href="@Url.Action("DisabledList", "FirmManager")"><i class="fa fa-minus"></i> Disabled Farm Manager List</a></li>
+                                </ul>
+                            </li>
+                        }
+                    }
+
+
+                    @{
+                        if (ViewContext.Controller.IsSysAdmin())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-users"></i>
+                                    <span>Manager</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+                                    <li><a href="@Url.Action("Registration", "Manager")"><i class="fa fa-plus"></i>Add Manager</a></li>
+                                    <li><a href="@Url.Action("EnabledList", "Manager")"><i class="fa fa-list"></i>Enabled Manager List</a></li>
+                                    <li><a href="@Url.Action("DisabledList", "Manager")"><i class="fa fa-minus"></i> Disabled Manager List</a></li>
+
+                                </ul>
+                            </li>
+                        }
+                    }
+
+                    @{
+                        if (ViewContext.Controller.IsCustomer())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-users"></i>
+                                    <span>Orders</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+
+                                    <li><a href="@Url.Action("SingleOrderAdd", "Order")"><i class="fa fa-plus"></i>Add Order</a></li>
+
+
+                                </ul>
+                            </li>
+                        }
+                    }
+                    @{
+                        if (ViewContext.Controller.IsSysAdmin())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-user"></i>
+                                    <span>Partner</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+                                    <li><a href="@Url.Action("Registration", "Partner")"><i class="fa fa-plus"></i>Add Partner</a></li>
+                                    <li><a href="@Url.Action("EnabledList", "Partner")"><i class="fa fa-list"></i>Enabled Partner List</a></li>
+                                    <li><a href="@Url.Action("DisabledList", "Partner")"><i class="fa fa-minus"></i> Disabled Partner List</a></li>
+                                </ul>
+                            </li>
+
+                        }
+                    }
+
+                    @{
+                        if (ViewContext.Controller.IsSysAdmin())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    <span>Product</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+                                    <li><a href="@Url.Action("Add", "Product")"><i class="fa fa-plus"></i>Add Product</a></li>
+                                    <li><a href="@Url.Action("Index", "Product")"><i class="fa fa-list"></i>Enabled Product List</a></li>
+                                    <li><a href="@Url.Action("DisabledProduts", "Product")"><i class="fa fa-minus"></i>Disabled Product List</a></li>
+                                </ul>
+                            </li>
+                        }
+                    }
+
+                    @{
+                        if (!ViewContext.Controller.IsCustomer() && !ViewContext.Controller.IsDeliveryBoy())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    <span>Production</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+                                    @{
+                                        if (ViewContext.Controller.IsSysAdmin() || ViewContext.Controller.IsFirmManager())
+                                        {
+                                            <li><a href="@Url.Action("AnimalTypeList", "Production")"><i class="fa fa-plus"></i>Add Milk Production</a></li>
+                                            <li><a href="@Url.Action("MilkProductionList", "Production")"><i class="fa fa-list"></i> Milk Production List</a></li>
+                                        }
+                                    }
+
+                                    @{
+                                        if (ViewContext.Controller.IsSysAdmin())
+                                        {
+                                            <li><a href="@Url.Action("AnimalTypeListEdit", "Production")"><i class="fa fa-edit"></i> Edit Milk Production</a></li>
+                                        }
+                                    }
+
+                                    @{
+                                        if (ViewContext.Controller.IsSysAdmin() || ViewContext.Controller.IsManager())
+                                        {
+                                            <li><a href="@Url.Action("Factory", "Production")"><i class="fa fa-plus"></i>Add Factory Production</a></li>
+                                        }
+                                    }
+
+                                    <li><a href="@Url.Action("FactoryList", "Production")"><i class="fa fa-list"></i>Factory Production List</a></li>
+                                    @{
+                                        if (ViewContext.Controller.IsSysAdmin() || ViewContext.Controller.IsManager())
+                                        {
+                                            <li><a href="@Url.Action("Add", "SalePointProduct")"><i class="fa fa-plus"></i>Sale Point Product Add</a></li>
+                                        }
+                                    }
+                                    <li><a href="@Url.Action("Stock", "SalePointProduct")"><i class="fa fa-plus"></i>Sale Point Product Stock</a></li>
+                                    <li><a href="@Url.Action("TransferList", "SalePointProduct")"><i class="fa fa-plus"></i>Sale Point Product List</a></li>
+
+
+                                    @{
+                                        if (ViewContext.Controller.IsSysAdmin() || ViewContext.Controller.IsManager() || ViewContext.Controller.IsFirmManager())
+                                        {
+                                            <li><a href="@Url.Action("MilksummaryAdd", "Production")"><i class="fa fa-plus"></i>Add Milk Consumption Data</a></li>
+                                        }
+                                    }
+
+
+                                    <li><a href="@Url.Action("MilkSummary", "Production")"><i class="fa fa-plus"></i>Milk Consumption Summary</a></li>
+                                </ul>
+                            </li>
+                        }
+                    }
+
+                    @*@{
+                                if (!ViewContext.Controller.IsCustomer() && !ViewContext.Controller.IsDeliveryBoy())
+                                {
+                                        <li class="treeview">
+                                            <a href="#">
+                                                <i class="fa fa-shopping-cart"></i>
+                                                <span>Report</span>
+                                            </a>
+                                            <ul class="treeview-menu" style="display:none;">
+                                                <li><a href="@Url.Action("Add", "Report")"><i class="fa fa-plus"></i> Milk</a></li>
+                                                <li><a href="@Url.Action("EnabledList", "Report")"><i class="fa fa-plus"></i>Factory Product</a></li>
+                                                <li><a href="@Url.Action("DisabledList", "Report")"><i class="fa fa-plus"></i>Sale Point Product</a></li>
+                                            </ul>
+                                        </li>
+                        }
+                                            }*@
+
+                    @{
+                        if (!ViewContext.Controller.IsCustomer())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    <span>Sale</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+                                    @{
+                                        if (!ViewContext.Controller.IsPartner())
+                                        {
+                                            <li><a href="@Url.Action("Sale", "Product")"><i class="fa fa-plus"></i>Add Sale and Bill</a></li>
+                                            @*<li><a href="@Url.Action("SingleSale", "Product")"><i class="fa fa-plus"></i>Add Sale</a></li>*@
+                                        }
+                                    }
+
+                                    @{
+                                        if (!ViewContext.Controller.IsDeliveryBoy())
+                                        {
+                                            <li><a href="@Url.Action("SaleHistory", "Product")"><i class="fa fa-plus"></i>View Sale History</a></li>
+                                            <li><a href="@Url.Action("BillHistory", "Product")"><i class="fa fa-plus"></i>View Bill History</a></li>
+                                        }
+                                    }
+
+                                </ul>
+                            </li>
+                        }
+                    }
+
+                    @{
+                        if (ViewContext.Controller.IsSysAdmin())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-map"></i>
+                                    <span>Sale Point</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+                                    <li><a href="@Url.Action("Add", "SalePoint")"><i class="fa fa-plus"></i>Add Sale Point</a></li>
+                                    <li><a href="@Url.Action("EnabledList", "SalePoint")"><i class="fa fa-list"></i>Enabled Sale Point List</a></li>
+                                    <li><a href="@Url.Action("DisabledList", "SalePoint")"><i class="fa fa-list"></i>Disabled Sale Point List</a></li>
+                                </ul>
+                            </li>
+                        }
+                    }
+
+                    @{
+                        if (ViewContext.Controller.IsSysAdmin())
+                        {
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-map"></i>
+                                    <span>Sub Area</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+                                    <li><a href="@Url.Action("Add", "SubArea")"><i class="fa fa-plus"></i>Add Sub Area</a></li>
+                                    <li><a href="@Url.Action("EnabledList", "SubArea")"><i class="fa fa-list"></i>Enabled Sub Area List</a></li>
+                                    <li><a href="@Url.Action("DisabledList", "SubArea")"><i class="fa fa-list"></i>Disabled Sub Area List</a></li>
+                                </ul>
+                            </li>
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="fa fa-map"></i>
+                                    <span>SMS</span>
+                                </a>
+                                <ul class="treeview-menu" style="display:none;">
+                                    <li><a href="@Url.Action("Update", "SMS")"><i class="fa fa-plus"></i> SMS Configuration</a></li>
+
+                                </ul>
+                            </li>
+                        }
+                    }
+
+
+
+                </ul>
+
+
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+
+            <!-- Main content -->
+            <section class="content">
+                <!-- Main row -->
+                <div class="row">
+                    @RenderBody()
+                </div>
+                <!-- /.row (main row) -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> 2.1.0
+            </div>
+            <strong>Copyright &copy; 2018-2019 <a href="https://agroexpressbd.com">Agro Express Ltd.</a>.</strong> All rights
+            reserved.
+        </footer>
+
+    </div>
+    <!-- ./wrapper -->
+    <!-- jQuery 3 -->
+    <script src="~/Scripts/jquery.min.js"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="~/Scripts/jquery-ui.min.js"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <!-- Bootstrap 3.3.7 -->
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+    <!-- AdminLTE App -->
+    <script src="~/Scripts/adminlte.min.js"></script>
+
+</body>
+</html>

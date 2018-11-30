@@ -1,0 +1,205 @@
+﻿@model AgroExpress.DataLayer.ViewModel.AnimalList
+
+@{
+    ViewBag.Title = "List";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.min.js"></script>
+<h2 id="title">Animal List</h2>
+<br />
+<style>
+
+    input, select {
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+    }
+</style>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <script type="text/javascript">
+        $(function () {
+            $("#AnimalTypeID").change(function () {
+
+                var AnimalTypeID = $("#AnimalTypeID :selected").val();
+                var url = '../Animal/GetAnimalListForType';
+                var data1 = { "animalTypeID": AnimalTypeID };
+
+                $.post(url, data1, function (data) {
+                    var items = [];
+                    items.push("<option value=" + 0 + ">" + "Select Animal" + "</option>");
+                    for (var i = 0; i < data.length; i++) {
+
+                        items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                    }
+                    $("#AnimalID").html(items.join(' '));
+                })
+            });
+        });
+    </script>
+    <div class="row">
+        <div class="col-md-2">
+
+        </div>
+        <div class="col-md-2">
+            <label>Animal Category</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(model => model.AnimalTypeID, Model.AnimalTypes, "Select Category", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AnimalTypeID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <label>Select an Animal</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(model => model.AnimalID, Model.AnimalCodes, "Select Animal", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AnimalID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <label>Gender</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(model => model.Gender, Model.GenderOptions, "Gender", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AnimalTypeID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <label>Entry Date From</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.EntryDateMin, new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(model => model.EntryDateMin, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-2">
+
+        </div>
+    </div>
+
+
+    <div class="row">
+
+        <div class="col-md-2">
+
+        </div>
+        <div class="col-md-2">
+            <label>Entry Date To</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.EntryDateMax, new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(model => model.EntryDateMax, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <label>Exit Date From</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.ExitDateMin, new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(model => model.ExitDateMin, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <label>Exit Date To</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.ExitDateMax, new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(model => model.ExitDateMax, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <label>&nbsp;</label>
+            <div class="form-group has-feedback">
+                <button type="submit" class="btn btn-primary btn-block btn-flat">Search</button>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+
+        </div>
+
+    </div>
+    <br />
+
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th id="table-header">
+                Category
+            </th>
+            <th id="table-header">
+                Code Name
+            </th>
+            <th id="table-header">
+                Date of Entry
+            </th>
+            <th id="table-header">
+                Date of Birth
+            </th>
+            <th id="table-header">
+                Date of Exit
+            </th>
+            <th id="table-header">
+                Comments
+            </th>
+            <th id="table-header">
+                Gender
+            </th>
+            @{
+                if (ViewContext.Controller.IsSysAdmin())
+                {
+                    <th>Operation</th>
+                }
+            }
+        </tr>
+
+        @foreach (var item in Model.searchResult)
+        {
+            <tr>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.animalType.AnimalTypeName)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.AnimalCodeName)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.DateofEntry)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.DOB)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.DateofExit)
+                </td>
+                <td id="table-header" style="width:25%">
+                    @Html.DisplayFor(modelItem => item.Comments)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                @{
+                    if (ViewContext.Controller.IsSysAdmin())
+                    {
+                        <td id="table-header">
+                            @Html.ActionLink("Edit", "Edit", new { id = item.PKAnimalId }) |
+                            @Html.ActionLink("Disable", "Disable",
+                                   new { id = item.PKAnimalId },
+                                   new { onclick = "return confirm('Are you sure you wish to disable this Animal?');" })
+                        </td>
+                    }
+                }
+
+            </tr>
+        }
+
+    </table>
+}

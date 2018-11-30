@@ -1,0 +1,6 @@
+Log time : 7/18/2018 6:15:22 PM Error type : System.Data.Entity.Validation.DbEntityValidationException Error Message : Validation failed for one or more entities. See 'EntityValidationErrors' property for more details.
+Log time : 7/19/2018 4:07:29 PM Error type : System.Data.Entity.Infrastructure.DbUpdateException Error Message : An error occurred while updating the entries. See the inner exception for details.
+Log time : 7/19/2018 4:09:59 PM Error type : System.Data.Entity.Infrastructure.DbUpdateException Error Message : An error occurred while updating the entries. See the inner exception for details.
+Log time : 7/22/2018 10:16:42 AM Error type : System.Data.Entity.Infrastructure.DbUpdateException Error Message : An error occurred while updating the entries. See the inner exception for details.
+Log time : 7/22/2018 10:18:44 AM Error type : System.Data.Entity.Infrastructure.DbUpdateException Error Message : An error occurred while updating the entries. See the inner exception for details.
+Log time : 7/22/2018 10:21:54 AM Error type : System.Data.Entity.Infrastructure.DbUpdateException Error Message : An error occurred while updating the entries. See the inner exception for details.

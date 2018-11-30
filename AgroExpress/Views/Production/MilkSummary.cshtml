@@ -1,0 +1,87 @@
+﻿@model IEnumerable<AgroExpress.DataLayer.Models.MilkSummary>
+
+@{
+
+    ViewBag.Title = "Milk Summary";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />
+<h2 id="title">Milk Summary</h2>
+
+
+<table class="table table-bordered table-striped">
+    <tr>
+        <th id="table-header">
+            Date
+        </th>
+        <th id="table-header">
+            Total Production
+        </th>
+        <th id="table-header">
+            Culf Morning
+        </th>
+        <th id="table-header">
+            Culf Afternoon
+        </th>
+        <th id="table-header">
+            Stuff
+        </th>
+        <th id="table-header">
+            Factory
+        </th>
+        <th id="table-header">
+            Wastage
+        </th>
+        @{
+        if (ViewContext.Controller.IsSysAdmin())
+        {
+            <th id="table-header">Operation</th>
+    }
+        }
+
+    </tr>
+
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td id="table-header">
+            @Html.DisplayFor(modelItem => item.Date)
+        </td>
+        <td id="table-header">
+            @Html.DisplayFor(modelItem => item.TotalProduction)
+        </td>
+
+        <td id="table-header">
+            @Html.DisplayFor(modelItem => item.CulfMorning)
+        </td>
+
+        <td id="table-header">
+            @Html.DisplayFor(modelItem => item.CulfAfternoon)
+        </td>
+
+        <td id="table-header">
+            @Html.DisplayFor(modelItem => item.Stuff)
+        </td>
+
+        <td id="table-header">
+            @Html.DisplayFor(modelItem => item.Factory)
+        </td>
+
+        <td id="table-header">
+            @Html.DisplayFor(modelItem => item.Wastage)
+        </td>
+        @{
+        if (ViewContext.Controller.IsSysAdmin())
+        {
+            <td id="table-header">
+                @Html.ActionLink("Edit", "MilksummaryEdit", new { date = item.Date })
+
+            </td>
+    }
+        }
+
+    </tr>
+    }
+
+</table>

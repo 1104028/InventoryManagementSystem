@@ -1,0 +1,76 @@
+﻿@model AgroExpress.DataLayer.ViewModel.AnimalUpdate
+@{
+    ViewBag.Title = "Animal Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 style="text-align:center">Update Animal Information</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    if (ViewBag.success != null)
+    {
+        <script>
+            alert("Animal has been Updated Successfully"); // display string message
+        </script>
+    }
+    <style>
+        .register-box {
+            margin-top: 1%;
+        }
+    </style>
+    <div class="register-box">
+        <div class="register-box-body">
+             @Html.HiddenFor(model => model.PKAnimalId)
+             @Html.HiddenFor(model => model.IsDeleted)
+            <div class="form-group has-feedback">
+                <label>Animal Category</label>
+                @Html.DropDownListFor(model => model.AnimalType, Model.AnimalTypes,
+     new { @class = "form-control" }) @Html.ValidationMessageFor(model => model.AnimalType, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Animal Code Name</label>
+                @Html.EditorFor(model => model.AnimalCodeName, new { htmlAttributes = new { @class = "form-control", placeholder = "Animal Code Name" } })
+                @Html.ValidationMessageFor(model => model.AnimalCodeName, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group has-feedback">
+                <label>Date of Entry</label>
+                @Html.EditorFor(model => model.DateofEntry, new { htmlAttributes = new { @class = "form-control", type = "date", placeholder = "Date of Entry" } })
+                @Html.ValidationMessageFor(model => model.DateofEntry, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Date of Exit</label>
+                @Html.EditorFor(model => model.DateofExit, new { htmlAttributes = new { @class = "form-control", type = "date", Placeholder = "Date of Exit" } })
+                @Html.ValidationMessageFor(model => model.DateofExit, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Comments About This Animal</label>
+                @Html.EditorFor(model => model.Comments, new { htmlAttributes = new { @class = "form-control", Placeholder = "Comments" } })
+                @Html.ValidationMessageFor(model => model.Comments, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Gender</label>
+                @Html.DropDownListFor(model => model.Gender, Model.GenderOption, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="row">
+                <div class="col-xs-8">
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">Update</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </div>
+        <!-- /.form-box -->
+    </div>
+    <!-- /.form-box -->
+}

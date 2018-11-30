@@ -1,0 +1,15 @@
+﻿h2#title {
+    text-align:center;
+}
+p#create {
+    padding-left: 4%;
+    padding-bottom: 4%;
+    padding-top: 1%;
+    font-weight: 800;
+}
+
+#table-header {
+    padding-left: 5%;
+    text-align:center;
+}
+

@@ -1,0 +1,62 @@
+﻿@model IEnumerable<AgroExpress.DataLayer.Models.Manager>
+
+@{
+
+    ViewBag.Title = "Disabled Manager List";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />
+<h2 id="title">Disabled ManagerList</h2>
+
+<p id="create">
+    @Html.ActionLink("Create New", "Registration")
+</p>
+<table class="table table-bordered table-striped">
+    <tr>
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.FullName)
+        </th>
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.Address)
+        </th>
+
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.Mobile)
+        </th>
+
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th id="table-header">Operations</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td id="table-header">
+                @Html.HiddenFor(modelItem => item.PKManagerId)
+                @Html.DisplayFor(modelItem => item.FullName)
+            </td>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => item.Mobile)
+            </td>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+
+            <td id="table-header">
+                @Html.ActionLink("Edit", "Edit", new { id = item.PKManagerId }) |
+                @Html.ActionLink(
+                                   "Enable",
+                                   "Enable",
+                                   new { id = item.PKManagerId },
+                                   new { onclick = "return confirm('Are you sure you wish to enable this Delivery Boy?');" })
+            </td>
+        </tr>
+    }
+
+</table>

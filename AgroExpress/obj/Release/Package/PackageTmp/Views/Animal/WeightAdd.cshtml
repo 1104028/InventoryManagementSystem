@@ -1,0 +1,115 @@
+﻿@model AgroExpress.DataLayer.ViewModel.AnimalWeightAdd
+
+@{
+    ViewBag.Title = "Animal weight";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@*<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />*@
+<h2 style="text-align:center">Add Animal weights</h2>
+
+<style>
+
+    input,select {
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+    }
+
+    th,td {
+        text-align:center;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+<div class="row" style="padding:2%">
+
+    <div class="col-md-2">
+
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group has-feedback">
+            <label>Select Date</label>
+            @Html.EditorFor(model => model.SearchDate, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group has-feedback">
+            <label>Animal Category</label>
+            @Html.DropDownListFor(model => model.AnimalTypeId, Model.AnimalTypes, "Select Animal Category", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.AnimalTypeId, "", new { @class = "text-danger" })
+        </div>
+
+    </div>
+
+    <div class="col-md-2">
+        <label>&nbsp;</label>
+        <div class="form-group has-feedback">
+
+            <button type="submit" name="Submit" value="Date" class="btn btn-primary btn-block btn-flat">Search</button>
+        </div>
+    </div>
+    <div class="col-md-2">
+
+    </div>
+</div>
+
+
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>
+                &nbsp;
+            </th>
+            <th id="table-header">
+                Animal Code Name
+            </th>
+
+            <th id="table-header">
+                Date
+            </th>
+
+            <th id="table-header">
+                Weight
+            </th>
+            <th>
+                &nbsp;
+            </th>
+
+        </tr>
+        @for (int i = 0; i < Model.animalweightlist.Count; i++)
+        {
+        <tr>
+            <td>&nbsp;</td>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => Model.animalweightlist[i].AnimalName)
+
+                @Html.HiddenFor(modelItem => Model.animalweightlist[i].AnimalId)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.animalweightlist[i].Date)
+                @Html.HiddenFor(modelItem => Model.animalweightlist[i].Date)
+            </td>
+            <td id="table-header">
+                @Html.EditorFor(modelItem => Model.animalweightlist[i].Weight)
+            </td>
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        </tr>
+        }
+        <tr>
+            <td colspan="3"></td>
+            <td>
+                <button type="submit" name="Submit" value="Add" style="width:100%;" class="btn btn-primary btn-block btn-flat">ADD</button>
+            </td>
+            <td colspan="2"></td>
+        </tr>
+    </table>
+}

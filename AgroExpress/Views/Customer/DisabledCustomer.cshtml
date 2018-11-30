@@ -1,0 +1,93 @@
+﻿@model IEnumerable<AgroExpress.DataLayer.Models.Customer>
+
+@{
+    ViewBag.Title = "Disabled Customer List";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />
+<h2 style="text-align:center">Disabled Customer List</h2>
+
+<p style=" padding-left: 4%;
+    padding-bottom: 4%;
+    padding-top: 1%;
+    font-weight: 800;">
+
+</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+ 
+    <table class="table table-bordered table-striped">
+        <tr>
+
+            <th id="table-header">
+                Full Name
+            </th>
+            <th id="table-header">
+                Address
+            </th>
+            <th id="table-header">
+                Mobile
+            </th>
+
+            <th id="table-header">
+                Rate
+            </th>
+            <th id="table-header">
+                Service Charge
+            </th>
+            <th>
+                Total Bill
+            </th>
+            <th id="table-header">
+                Total Paid
+            </th>
+
+            <th id="table-header">Operation</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                @Html.HiddenFor(modelItem => item.PKCustomerId)
+
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.Mobile)
+                </td>
+
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.Rate)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.ServiceCharge)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.TotalBill)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.TotalPaid)
+                </td>
+
+                <td id="table-header">
+                    @Html.ActionLink("Edit", "Edit", new { id = item.PKCustomerId }) |
+                    @Html.ActionLink("Transactions", "TransactionHistory", new { id = item.PKCustomerId }) |
+                    @Html.ActionLink(
+        "Enable",
+        "Enable",
+        new { id = item.PKCustomerId },
+        new { onclick = "return confirm('Are you sure you wish to enable this customer?');" })
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+

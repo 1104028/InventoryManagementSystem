@@ -1,0 +1,48 @@
+﻿@model IEnumerable<AgroExpress.DataLayer.ViewModel.CustomerDues>
+
+@{
+    ViewBag.Title = "CustomerDueList";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />
+<h2 id="title">Customer Due List</h2>
+
+
+<table class="table table-bordered table-striped">
+    <tr>
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.CustomerName)
+        </th>
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.Mobile)
+        </th>
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.SubAreaName)
+        </th>
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.TotalDue)
+        </th>
+
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => item.CustomerName)
+            </td>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => item.Mobile)
+            </td>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => item.SubAreaName)
+            </td>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => item.TotalDue)
+            </td>
+
+        </tr>
+    }
+
+</table>

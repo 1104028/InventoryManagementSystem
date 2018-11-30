@@ -1,0 +1,73 @@
+﻿@model IEnumerable<AgroExpress.DataLayer.Models.AnimalInformation>
+
+@{
+    ViewBag.Title = "DisabledAnimalList";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />
+<h2 id="title">Disabled Animal List</h2>
+
+
+<table class="table table-bordered table-striped">
+    <tr>
+        @* <th id="table-header">
+                Category
+            </th>*@
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.AnimalCodeName)
+        </th>
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.DateofEntry)
+        </th>
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.DateofExit)
+        </th>
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.Comments)
+        </th>
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.Gender)
+        </th>
+        @{
+            if (ViewContext.Controller.IsSysAdmin())
+            {
+                <th>Operation</th>
+            }
+        }
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            @*<td id="table-header">
+                    @Html.DisplayFor(modelItem => item.AnimalTypeId)
+                </td>*@
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => item.AnimalCodeName)
+            </td>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => item.DateofEntry)
+            </td>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => item.DateofExit)
+            </td>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => item.Comments)
+            </td>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => item.Gender)
+            </td>
+            @{
+                if (ViewContext.Controller.IsSysAdmin())
+                {
+                    <td id="table-header">
+                        @Html.ActionLink("Enable", "Enable", new { id = item.PKAnimalId },
+                              new { onclick = "return confirm('Are you sure you wish to Enable this Animal?');" })
+                    </td>
+                }
+            }
+
+        </tr>
+    }
+
+</table>

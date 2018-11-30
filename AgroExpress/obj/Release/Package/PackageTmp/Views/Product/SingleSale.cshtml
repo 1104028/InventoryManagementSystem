@@ -1,0 +1,304 @@
+﻿@model AgroExpress.DataLayer.ViewModel.SingleSaleAdd
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Product Sale</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+
+    <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+    <!-- Ionicons -->
+
+    <link href="~/Content/AdminLTE.min.css" rel="stylesheet" />
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+
+    <link href="~/Content/_all-skins.min.css" rel="stylesheet" />
+    <!-- Morris chart -->
+
+    <!-- jQuery 3 -->
+    <script src="~/Scripts/jquery.min.js"></script>
+
+    <!-- Google Font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+</head>
+<body class="hold-transition skin-blue">
+    <!-- Main content -->
+    <section class="content content-wrapper">
+        <h2 style="text-align:center">Product Sale</h2>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            if (ViewBag.success != null)
+            {
+                <script>
+                    alert("Sale Info has been added Successfully"); // display string message
+                </script>
+            }
+            <style>
+                .register-box {
+                    margin-top: 1%;
+                }
+            </style>
+            <script type="text/javascript">
+                $(function () {
+                    $("#SalePointId").change(function () {
+
+                        var SalePointName = $("#SalePointId :selected").text();
+                        var url = '../Customer/SalePointList';
+                        var data1 = { "SalePointName": SalePointName };
+
+                        $.post(url, data1, function (data) {
+                            var items = [];
+                            items.push("<option value=>" + "- Please select a Area -" + "</option>");
+                            for (var i = 0; i < data.length; i++) {
+
+                                items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                            }
+
+                            $("#AreaId").html(items.join(' '));
+
+
+                        })
+                    });
+
+                });
+
+                $(function () {
+                    $("#AreaId").change(function () {
+
+                        var AreaName = $("#AreaId :selected").text();
+                        var url = '../Customer/AreaList';
+                        var data1 = { "AreaName": AreaName };
+
+                        $.post(url, data1, function (data) {
+                            var items = [];
+                            items.push("<option value=>" + "- Please select a Sub Area -" + "</option>");
+                            for (var i = 0; i < data.length; i++) {
+
+                                items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                            }
+
+                            $("#SubAreaId").html(items.join(' '));
+
+
+                        })
+                    });
+
+                });
+
+                $(function () {
+                    $("#SubAreaId").change(function () {
+
+                        var subareaid = $("#SubAreaId :selected").val();
+                        var url = '../Customer/CustomerList';
+                        var data1 = { "SubAreaId": subareaid };
+
+                        $.post(url, data1, function (data) {
+                            var items = [];
+                            items.push("<option value=>" + "- Please select a Customer -" + "</option>");
+                            for (var i = 0; i < data.length; i++) {
+
+                                items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                            }
+
+                            $("#CustomerId").html(items.join(' '));
+
+
+                        })
+                    });
+
+                });
+
+                $(function () {
+                    $("#CustomerId").change(function () {
+
+                        var customerid = $("#CustomerId :selected").val();
+                        $("#ProductId").val(3);
+                        console.log('dfdf');
+                        var url = '../Customer/CustomerInfo';
+                        var data1 = { "CustomerID": customerid };                        
+
+                        $.post(url, data1, function (data) {
+                            if (data != null) {
+
+                                $("#Address").val(data.Adress);
+                                $("#Mobile").val(data.Mobile);
+                                $("#Rate").val(data.Rate);
+                                $("#ServiceCharge").val(data.ServiceCharge);
+
+                            }
+
+                        })
+                    });
+
+                });
+
+                $(function () {
+                    $("#ProductId").change(function () {
+                        var SellPoint = document.getElementById("SalePointId");
+                        var SelPointID = SellPoint.options[SellPoint.selectedIndex].value;
+                        if (SelPointID == null || SelPointID == 0) {
+                            SellPoint.options[SellPoint.selectedIndex].selected = false;
+                            alert('Please select a sale point first');
+                            return;
+                        }
+
+                        var selected = document.getElementById("ProductId");
+
+                        var SelectedProduct = selected.options[selected.selectedIndex].value;
+
+                        var productname = selected.options[selected.selectedIndex].text;
+
+                        var url = '../Product/SalePointStock';
+                        var data1 = { "ProductID": SelectedProduct, "SalePointID": SelPointID };
+
+                        $.post(url, data1, function (data) {
+
+                            $("#Amount").attr({
+                                "max": data,
+                                "min": 0,
+                            });
+                            $("#Amount").val(null);
+                            $("#Rate").val(null);
+                            $("#ServiceCharge").val(0);
+                        })
+
+
+                    });
+                });
+
+
+                function AmountValidate() {
+
+                    var selectedp = document.getElementById("ProductId");
+
+                    var SelectedProduct = selectedp.options[selectedp.selectedIndex].value;
+
+                    var selected = document.getElementById("Amount");
+                    if (SelectedProduct == null || SelectedProduct == 0) {
+                        selected.value = null;
+                        alert('Please select product first');
+                        return;
+                    }
+                    var val = parseFloat(selected.value);
+
+                    var maximum = $("#Amount").attr('max');
+                    maximum = parseFloat(maximum);
+
+                    if (val > maximum) {
+                        selected.value = maximum;
+                        alert('Insufficient stock!!!!! This product have only ' + maximum + '');
+                    }
+                }
+            </script>
+            <div class="register-box">
+                <div class="register-box-body">
+
+                    @*<div class="form-group has-feedback">
+                        <label>Sale Date</label>
+                        @Html.EditorFor(model => model.DateTime, new { htmlAttributes = new { @class = "form-control", placeholder = "Date" } })
+                        @Html.ValidationMessageFor(model => model.DateTime, "", new { @class = "text-danger" })
+                    </div>*@
+                    <div class="form-group has-feedback">
+                        <label>Sale Point Name</label>
+                        @Html.DropDownListFor(m => m.SalePointId, Model.salepointlist, "- Please select a Sale Point -", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SalePointId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <label>Area Name</label>
+                        @Html.DropDownListFor(m => m.AreaId, Model.arealist, "- Please select a Area -", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.AreaId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <label>Sub Area Name</label>
+                        @Html.DropDownListFor(m => m.SubAreaId, Model.subarealist, "- Please select a Sub Area -", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SubAreaId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <label>Customer</label>
+                        @Html.DropDownListFor(m => m.CustomerId, Model.customerlist, "- Please select a Customer -", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <label>Address</label>
+                        @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", Placeholder = "Customer Address", @readonly = "readonly" } })
+                        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <label>Mobile</label>
+                        @Html.EditorFor(model => model.Mobile, new { htmlAttributes = new { @class = "form-control", Placeholder = "Mobile Number", @readonly = "readonly" } })
+                        @Html.ValidationMessageFor(model => model.Mobile, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <label>Product</label>
+                        @Html.DropDownListFor(m => m.ProductId, Model.productlist, "- Please select a Product -", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ProductId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <label>Amount</label>
+                        @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <label>Rate</label>
+                        @Html.EditorFor(model => model.Rate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Rate, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <label>Service Charge</label>
+                        @Html.EditorFor(model => model.ServiceCharge, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ServiceCharge, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-8">
+                        </div>
+                        <!-- /.col -->
+                        <div class="col-xs-4">
+                            <button type="submit" class="btn btn-primary btn-block btn-flat">Add</button>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                </div>
+                <!-- /.form-box -->
+            </div>
+            <!-- /.form-box -->
+        }
+    </section>
+    <!-- /.content -->
+    <!-- /.content-wrapper -->
+    <!-- ./wrapper -->
+    
+    <!-- jQuery UI 1.11.4 -->
+    <script src="~/Scripts/jquery-ui.min.js"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    
+    <!-- Bootstrap 3.3.7 -->
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <!-- Morris.js charts -->
+    
+    <!-- AdminLTE App -->
+    <script src="~/Scripts/adminlte.min.js"></script>
+
+   
+</body>
+</html>

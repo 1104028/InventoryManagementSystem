@@ -1,0 +1,113 @@
+﻿@model AgroExpress.DataLayer.ViewModel.MilkSummaryAdd
+
+@{
+    ViewBag.Title = "Add Milk Summary";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<h2 style="text-align:center">Add Milk Summary</h2>
+<script src="~/Scripts/jquery.min.js"></script>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    if (ViewBag.success != null)
+    {
+        <script>
+            alert("Milk Summary has been added Successfully"); // display string message
+        </script>
+    }
+    <style>
+        .register-box {
+            margin-top: 1%;
+        }
+
+        input {
+            
+            display: block;
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        }
+       
+    </style>
+    <script>
+        function MilkUnit(ele) {
+            var selected = document.getElementById("milkunit");
+
+            var SelectedProduct = selected.options[selected.selectedIndex].value;
+            if (SelectedProduct == 2) {
+                ele.value = parseFloat(ele.value) * 1.04;
+            }
+
+        }
+    </script>
+    <div class="register-box">
+        <div class="register-box-body">
+
+            <div class="form-group has-feedback">
+                <label>Date</label>
+                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Milk unit</label>
+                <select class="form-control" id="milkunit" name="milkunit">
+                    <option selected="selected" value="1">ltr</option>
+                    <option value="2">kg</option>
+                </select>
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Culf Morning</label>
+                @Html.TextBoxFor(model => model.CulfMorning, new { onchange = "MilkUnit(this)", htmlAttributes = new { @class = "form-control", Placeholder = "" } })
+                @Html.ValidationMessageFor(model => model.CulfMorning, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Culf Afternoon</label>
+                @Html.TextBoxFor(model => model.CulfAfternoon, new { onchange = "MilkUnit(this)", htmlAttributes = new { @class = "form-control", Placeholder = "" } })
+                @Html.ValidationMessageFor(model => model.CulfAfternoon, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Stuff Consumption</label>
+                @Html.TextBoxFor(model => model.Stuff, new { onchange = "MilkUnit(this)", htmlAttributes = new { @class = "form-control", Placeholder = "Selling amount" } })
+                @Html.ValidationMessageFor(model => model.Stuff, "", new { @class = "text-danger" })
+            </div>
+
+
+            <div class="form-group has-feedback">
+                <label>Wastage</label>
+                @Html.TextBoxFor(model => model.Wastage, new { onchange = "MilkUnit(this)", htmlAttributes = new { @class = "form-control", Placeholder = "Selling amount" } })
+                @Html.ValidationMessageFor(model => model.Wastage, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="row">
+                <div class="col-xs-8">
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">ADD</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </div>
+        <!-- /.form-box -->
+    </div>
+    <!-- /.form-box -->
+}
+

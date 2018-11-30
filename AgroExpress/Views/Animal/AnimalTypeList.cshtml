@@ -1,0 +1,39 @@
+﻿@model IEnumerable<AgroExpress.DataLayer.Models.AnimalType>
+
+@{
+
+    ViewBag.Title = "Enabled Animal Type List";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />
+<h2 id="title">Enabled Animal Type List</h2>
+
+<table class="table table-bordered table-striped">
+    <tr>
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.AnimalTypeName)
+        </th>
+
+        <th id="table-header">Operation</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => item.AnimalTypeName)
+            </td>
+
+
+            <td id="table-header">
+                @Html.ActionLink(
+                       "Add Vccine",
+                       "Vaccination",
+                       new { TypeID = item.PKAnimalTypeId })
+            </td>
+        </tr>
+    }
+
+</table>
+

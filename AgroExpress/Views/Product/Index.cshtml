@@ -1,0 +1,115 @@
+﻿@model AgroExpress.DataLayer.ViewModel.ProductListView
+@{
+    /**/
+
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div><h2 style="text-align:center">Enabled Product List</h2></div>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <style>
+
+        input, select {
+            display: block;
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+        }
+    </style>
+
+    <div class="row" style="padding:2%">
+
+        <div class="col-md-4">
+            <div class="form-group has-feedback">
+                <label>Products</label>
+                @Html.DropDownListFor(m => m.SelectedProductID, Model.ProductList, "- Product -", new { @class = "form-control" })
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <div class="form-group has-feedback">
+                <label>Select minimum stock value</label>
+                @Html.EditorFor(model => model.MinimumStock)
+            </div>
+
+        </div>
+        <div class="col-md-3">
+            <div class="form-group has-feedback">
+                <label>Select maximum stock value</label>
+                @Html.EditorFor(model => model.MaximumStock)
+            </div>
+
+        </div>
+        <div class="col-md-2">
+            <div class="form-group has-feedback">
+                <label>&nbsp;</label>
+                <button type="submit" name="Submit" value="Show" class="btn btn-primary btn-block btn-flat">Search</button>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+    <div>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th id="table-header">
+                    &nbsp;
+                </th>
+                <th id="table-header">
+                    &nbsp;
+                </th>
+                <th id="table-header">
+                    Product Name
+                </th>
+                <th id="table-header">
+                    Selling Unit
+                </th>
+                <th id="table-header">
+                    Stock
+                </th>
+                <th id="table-header">
+                    Operation
+                </th>
+            </tr>
+
+            @foreach (var item in Model.ProductSearchResult)
+            {
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.SellingUnit)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.Stock)
+                </td>
+                <td id="table-header">
+                    @Html.ActionLink("Edit", "Edit", new { id = item.PKProductId }) |
+                    @*@Html.ActionLink("Details", "Details", new { id = item.Product_Id }) |*@
+                    @Html.ActionLink("Disable", "Delete", new { id = item.PKProductId }, new { onclick = "return confirm('Are you sure you wish to disable this product?');" })
+
+                </td>
+
+            </tr>
+            }
+
+        </table>
+    </div>
+}
+

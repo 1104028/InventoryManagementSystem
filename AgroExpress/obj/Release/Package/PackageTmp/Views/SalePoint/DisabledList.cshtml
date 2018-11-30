@@ -1,0 +1,54 @@
+﻿@model IEnumerable<AgroExpress.DataLayer.Models.SalePoint>
+
+@{
+    ViewBag.Title = "Disabled Sale Point List";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />
+<h2 style="text-align:center">Disabled Sale Point List</h2>
+
+<p style=" padding-left: 4%;
+    padding-bottom: 4%;
+    padding-top: 1%;
+    font-weight: 800;">
+    @Html.ActionLink("Add New Sale Point", "Add")
+</p>
+<table class="table table-bordered table-striped">
+    <tr>
+        
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.SalePointName)
+        </th>
+        <th id="table-header">
+            @Html.DisplayNameFor(model => model.SalePointAddress)
+        </th>
+        
+
+        <th id="table-header">Operation</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+    <tr>
+        @Html.HiddenFor(model => item.PKSalePointID)
+
+        <td id="table-header">
+            @Html.DisplayFor(modelItem => item.SalePointName)
+        </td>
+        <td id="table-header">
+            @Html.DisplayFor(modelItem => item.SalePointAddress)
+        </td>
+
+        <td id="table-header">
+            @Html.ActionLink("Edit", "Edit", new { id = item.PKSalePointID }) |
+            @Html.ActionLink(
+          "Enable",
+          "Enable",
+          new { id = item.PKSalePointID },
+          new { onclick = "return confirm('Are you sure you wish to enable this sale point?');" })
+        </td>
+    </tr>
+    }
+
+</table>

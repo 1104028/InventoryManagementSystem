@@ -1,0 +1,534 @@
+﻿@model AgroExpress.DataLayer.ViewModel.ProductSaleAdd
+@{
+    ViewBag.Title = "Sale";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<script src="~/Scripts/jquery.min.js"></script>
+@*<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />*@
+
+<h2 style="text-align:center;">Sale Information</h2>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <script type="text/javascript">
+        function ShowRow(ID) {
+            ID += 1;
+
+            var rw = document.getElementById("row " + ID);
+            rw.style.display = 'table-row';
+        }
+
+        function Validate(index, size) {
+
+            var selected = document.getElementById("ProductSaleInfo_" + index + "__ProductId");
+
+            var SelectedProduct = selected.options[selected.selectedIndex].value;
+
+            var SellPoint = document.getElementById("SalePointId");
+            var SelPointID = SellPoint.options[SellPoint.selectedIndex].value;
+
+            var SellPoint = document.getElementById("SalePointId");
+            var SelPointID = SellPoint.options[SellPoint.selectedIndex].value;
+            if (SelPointID == null || SelPointID == 0) {
+                SellPoint.options[SellPoint.selectedIndex].selected = false;
+                alert('Please select a sale point first');
+                return;
+            }
+
+            var validat = true;
+            for (var i = 0; i < size; i++) {
+                if (i != index) {
+
+                    var alreadyselected = document.getElementById("ProductSaleInfo_" + i + "__ProductId");
+                    if (alreadyselected.selectedIndex != null) {
+
+                        var alreadySelectedProduct = alreadyselected.options[alreadyselected.selectedIndex].value;
+                        if (alreadySelectedProduct == SelectedProduct) {
+                            selected.options[selected.selectedIndex].selected = false;
+                            $("#ProductSaleInfo_" + index + "__Amount").val(null);
+                            $("#ProductSaleInfo_" + index + "__Rate").val(null);
+                            $("#ProductSaleInfo_" + index + "__Servicecharge").val(0);
+                            validat = false;
+                            alert('This product already selected at item no ' + (i + 1));
+                            break;
+                        }
+                    }
+
+
+                }
+            }
+            if (validat) {
+
+                var url = '../Product/SalePointStock';
+                var data1 = { "ProductID": SelectedProduct, "SalePointID": SelPointID };
+
+                $.post(url, data1, function (data) {
+
+                    //  console.log(index);
+                    //var selectedAmoun = document.getElementById("TransferedProductInfo_" + index + "__Amount");
+
+                    $("#ProductSaleInfo_" + index + "__Amount").attr({
+                        "max": data,
+                        "min": 0,
+                    });
+                    $("#ProductSaleInfo_" + index + "__Amount").val(null);
+                    $("#ProductSaleInfo_" + index + "__Rate").val(null);
+                    $("#ProductSaleInfo_" + index + "__Servicecharge").val(0);
+                })
+
+
+            }
+        }
+
+        function AmountValidate(id) {
+
+            var selectedp = document.getElementById("ProductSaleInfo_" + id + "__ProductId");
+
+            var SelectedProduct = selectedp.options[selectedp.selectedIndex].value;
+
+            var selected = document.getElementById("ProductSaleInfo_" + id + "__Amount");
+            if (SelectedProduct == null || SelectedProduct == 0) {
+                selected.value = null;
+                alert('Please select product first');
+                return;
+            }
+            var val = parseFloat(selected.value);
+
+            var maximum = $("#ProductSaleInfo_" + id + "__Amount").attr('max');
+            maximum = parseFloat(maximum);
+
+            if (val > maximum) {
+                selected.value = maximum;
+                alert('Insufficient stock!!!!! This product have only ' + maximum + '');
+            }
+        }
+
+        function AmountChange(id) {
+            var total = document.getElementById("Totalbill").value;
+
+            if (!total) {
+                total = 0.0;
+            }
+
+
+
+            var amount = document.getElementById("ProductSaleInfo_" + id + "__Amount").value;
+            var rate = document.getElementById("ProductSaleInfo_" + id + "__Rate").value;
+            var Srate = document.getElementById("ProductSaleInfo_" + id + "__Servicecharge").value;
+
+
+
+
+            if (amount && rate && Srate) {
+
+                amount = parseFloat(amount);
+                rate = parseFloat(rate);
+                Srate = parseFloat(Srate);
+               
+                var subtotal = amount * (rate + Srate);
+                var presub = document.getElementById("subtoal " + id).value;
+
+
+
+
+                if (presub) {
+
+                    total = parseFloat(total) + parseFloat(subtotal) - parseFloat(presub);
+                    document.getElementById("Totalbill").value = total;
+                    document.getElementById("subtoal " + id).value = subtotal;
+
+                }
+                else {
+
+                    document.getElementById("subtoal " + id).value = subtotal;
+
+                    total = parseFloat(total) + parseFloat(subtotal);
+
+                    document.getElementById("Totalbill").value = total;
+                }
+            }
+            else {
+                document.getElementById("subtoal " + id).value = null;
+                document.getElementById("Totalbill").value = total;
+              
+                return;
+
+
+            }
+        }
+
+        $(function () {
+            $("#SalePointId").change(function () {
+
+                var SalePointName = $("#SalePointId :selected").text();
+                var url = '../Customer/SalePointList';
+                var data1 = { "SalePointName": SalePointName };
+
+                $.post(url, data1, function (data) {
+                    var items = [];
+                    items.push("<option value=>" + "- Please select a Area -" + "</option>");
+                    for (var i = 0; i < data.length; i++) {
+
+                        items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                    }
+
+                    $("#AreaID").html(items.join(' '));
+
+
+                })
+            });
+
+        });
+
+        $(function () {
+            $("#AreaID").change(function () {
+
+                var AreaName = $("#AreaID :selected").text();
+                var url = '../Customer/AreaList';
+                var data1 = { "AreaName": AreaName };
+
+                $.post(url, data1, function (data) {
+                    var items = [];
+                    items.push("<option value=>" + "- Please select a Sub Area -" + "</option>");
+                    for (var i = 0; i < data.length; i++) {
+
+                        items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                    }
+
+                    $("#SubAreaID").html(items.join(' '));
+
+
+                })
+            });
+
+        });
+        $(function () {
+            $("#SubAreaID").change(function () {
+
+                var subareaid = $("#SubAreaID :selected").val();
+                var url = '../Customer/CustomerList';
+                var data1 = { "SubAreaId": subareaid };
+
+                $.post(url, data1, function (data) {
+                    var items = [];
+                    items.push("<option value=>" + "- Please select a Customer -" + "</option>");
+                    for (var i = 0; i < data.length; i++) {
+
+                        items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                    }
+
+                    $("#CustomerID").html(items.join(' '));
+
+
+                })
+            });
+
+        });
+
+        $(function () {
+            $("#CustomerID").change(function () {
+
+                var customerid = $("#CustomerID :selected").val();
+                var url = '../Customer/CustomerInfo';
+                var data1 = { "CustomerID": customerid };
+              
+
+                $.post(url, data1, function (data) {
+                    if (data != null) {
+
+                        $("#CustomerInfo").val(data.Mobile);
+                        $("#CustomerAddress").val(data.Adress);
+                        $("#ProductSaleInfo_0__Rate").val(data.Rate);
+                        $("#ProductSaleInfo_0__Servicecharge").val(data.ServiceCharge);
+
+                    }
+
+                })
+            });
+
+        });
+
+        function MilkUnit(ele) {
+            var selected = document.getElementById("milkunit");
+
+            var SelectedProduct = selected.options[selected.selectedIndex].value;
+            if (SelectedProduct == 2) {
+                ele.value = parseFloat(ele.value) * 1.04;
+            }
+
+        }
+    </script>
+    if (ViewBag.message != null)
+    {
+        <script>
+            alert('@ViewBag.message');
+        </script>
+    }
+
+    <p style=" padding-left: 4%;
+    padding-bottom: 1%;
+    padding-top: 1%;
+    font-weight: 800;">
+
+    </p>
+    <style>
+
+        input, textarea {
+            display: block;
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+        }
+    </style>
+
+    <div class="row">
+        <div class="col-md-1" style="text-align:right">
+
+        </div>
+        <div class="col-md-3">
+            <label>Sale point</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(m => m.SalePointId, Model.salepointlist, "- select salepoint -", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label>Area</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(m => m.AreaID, Model.Area, "- select area -", new { @class = "form-control" })
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <label>Sub Area</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(m => m.SubAreaID, Model.SubArea, "- select sub-area -", new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-md-1" style="text-align:right">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1" style="text-align:right">
+
+        </div>
+        <div class="col-md-3">
+            <label>Customer</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(m => m.CustomerID, Model.Customer, "- Select customer -", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.CustomerID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label>Mobile Number</label>
+            @Html.TextBoxFor(model => model.CustomerInfo)
+        </div>
+
+        <div class="col-md-3">
+            <label>Address</label>
+            <textarea id="CustomerAddress">
+
+            </textarea>
+        </div>
+
+        <div class="col-md-1" style="text-align:right">
+
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-md-1" style="text-align:right">
+
+        </div>
+        <div class="col-md-3">
+            <label>Milk unit</label>
+            <div class="form-group has-feedback">
+                <select class="form-control" id="milkunit" name="milkunit">
+                    <option selected="selected" value="1">ltr</option>
+                    <option value="2">kg</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label>Sale Date</label>
+            <div class="form-group has-feedback">
+
+                @Html.EditorFor(model => model.SaleDate)
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+           
+            
+        </div>
+
+        <div class="col-md-1" style="text-align:right">
+
+        </div>
+
+    </div>
+    <div class="row">
+        <br />
+        <br />
+    </div>
+    if (ViewBag.message != null)
+    {
+        <script>
+            alert(@ViewBag.message);
+        </script>
+    }
+    int serialnumber = 1;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>&nbsp;</th>
+            <th id="table-header">
+
+                Item No
+            </th>
+            <th id="table-header">
+
+                Products
+            </th>
+
+            <th id="table-header">
+                Amount
+            </th>
+            <th id="table-header">
+                Rate
+            </th>
+            <th id="table-header">
+                Service Charge
+            </th>
+            <th id="table-header">
+                Sub Total
+            </th>
+
+            <th>
+                &nbsp;
+            </th>
+
+        </tr>
+        @for (int i = 0; i < Model.ProductSaleInfo.Count; i++)
+        {
+            serialnumber = i + 1;
+            if (i == 0)
+            {
+                <tr id="row @i" style="display:table-row">
+                    <td>&nbsp;</td>
+                    <td id="table-header">
+
+                        <labe>@serialnumber</labe>
+                    </td>
+                    <td id="table-header">
+                        Milk
+                        @Html.HiddenFor(modelItem => Model.ProductSaleInfo[i].ProductId)
+                    </td>
+
+                    <td id="table-header">
+                        @Html.TextBoxFor(modelItem => Model.ProductSaleInfo[i].Amount, new { onchange = "AmountChange(" + i + "); MilkUnit(this)" })
+                        @Html.ValidationMessageFor(modelItem => Model.ProductSaleInfo[i].Amount, "", new { @class = "text-danger" })
+                    </td>
+                    <td id="table-header">
+                        @Html.TextBoxFor(modelItem => Model.ProductSaleInfo[i].Rate, new { onchange = "AmountChange(" + i + ")" })
+                    </td>
+                    <td id="table-header">
+                        @Html.TextBoxFor(modelItem => Model.ProductSaleInfo[i].Servicecharge, new { onchange = "AmountChange(" + i + ")" })
+                    </td>
+                    <td id="table-header">
+
+                        <input type="number" id="subtoal @i" name="subtoal @i" />
+                    </td>
+                    <td>
+                        @if (i != Model.ProductSaleInfo.Count - 1)
+                        {
+                            <button onclick="ShowRow(@i)" type="button"> <i class="fa fa-plus"></i> </button>
+                        }
+
+
+                    </td>
+                </tr>
+            }
+            else
+            {
+                <tr id="row @i" style="display:none">
+                    <td>&nbsp;</td>
+                    <td id="table-header">
+
+                        <labe>@serialnumber</labe>
+                    </td>
+                    <td id="table-header">
+                        @Html.DropDownListFor(modelItem => Model.ProductSaleInfo[i].ProductId, Model.product, "- Please select a Product -", new { @class = "form-control", onchange = "Validate(" + i + "," + Model.ProductSaleInfo.Count + ")" })
+                        @*@Html.EditorFor(modelItem => Model.ProductionInfo[i].ProductId)*@
+                        @Html.ValidationMessageFor(model => Model.ProductSaleInfo[i].ProductId, "", new { @class = "text-danger" })
+
+                    </td>
+
+                    <td id="table-header">
+                        @Html.TextAreaFor(modelItem => Model.ProductSaleInfo[i].Amount, new { onchange = "AmountValidate(" + i + ");AmountChange(" + i + ")" })
+                        @Html.ValidationMessageFor(modelItem => Model.ProductSaleInfo[i].Amount, "", new { @class = "text-danger" })
+                    </td>
+                    <td id="table-header">
+                        @Html.TextAreaFor(modelItem => Model.ProductSaleInfo[i].Rate, new { onchange = "AmountChange(" + i + ")" })
+                    </td>
+                    <td id="table-header">
+                        @Html.TextAreaFor(modelItem => Model.ProductSaleInfo[i].Servicecharge, new { onchange = "AmountChange(" + i + ")" })
+                    </td>
+                    <td id="table-header">
+                        <input type="number" id="subtoal @i" name="subtoal @i" />
+                    </td>
+                    <td>
+                        @if (i != Model.ProductSaleInfo.Count - 1)
+                        {
+                            <button onclick="ShowRow(@i)" type="button"> <i class="fa fa-plus"></i> </button>
+                        }
+
+
+                    </td>
+                </tr>
+            }
+
+        }
+        <tr>
+            <td colspan="5"></td>
+            <td>
+                Total bill
+            </td>
+            <td>
+
+                <input type="number" id="Totalbill" />
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="5"></td>
+            <td>
+                Bill Paid
+            </td>
+            <td>
+                @Html.EditorFor(model => model.BillPaid)
+            </td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="4"></td>
+            <td>
+                <button type="submit" name="Submit" value="Add" style="width:100%;" class="btn btn-primary btn-block btn-flat">ADD</button>
+            </td>
+            <td colspan="3"></td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+
+}

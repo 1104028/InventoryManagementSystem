@@ -1,0 +1,134 @@
+﻿@model AgroExpress.DataLayer.ViewModel.MilkProductionView
+
+@{
+    ViewBag.Title = "Production";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 style="text-align:center">Milk Production Information</h2>
+<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.min.js"></script>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    if (ViewBag.success != null)
+    {
+        <script>
+            alert("Milk Production has been added Successfully"); // display string message
+        </script>
+    }
+    <script type="text/javascript">
+
+        function TotalChange(id) {
+            console.log(id);
+            var morning = document.getElementById("Cows_" + id + "__MorningAmount").value;
+
+            if (morning != 0) {
+                $("#" + "Cows_" + id + "__MorningAmount").attr('disabled', 'disabled');
+            }
+            var afternoon = document.getElementById("Cows_" + id + "__AfternoonAmount").value;
+
+
+        }
+    </script>
+    <div class="row" style="padding:2%">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <div class="form-group has-feedback">
+                <label>Select Date</label>
+                @Html.EditorFor(model => model.ProductionDate)
+
+            </div>
+
+        </div>
+        <div class="col-md-2">
+            <div class="form-group has-feedback">
+
+                <button type="submit" name="Submit" value="ChangeDate" class="btn btn-primary btn-block btn-flat">Change Date</button>
+            </div>
+        </div>
+        <div class="col-md-2">
+
+        </div>
+
+
+
+    </div>
+
+    int serialnumber = 1;
+    double morning_amount = 0.0;
+    double afternoon_amount = 0.0;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th id="table-header">
+
+                Serial Number
+            </th>
+            <th id="table-header">
+
+                Animal Code Name
+            </th>
+            <th>
+
+                Date
+            </th>
+            <th>
+
+                Morning Amount
+            </th>
+            <th>
+
+                Afternoon Amount
+            </th>
+        </tr>
+
+        @for (int i = 0; i < Model.Cows.Count; i++)
+        {
+            serialnumber = i + 1;
+            morning_amount = Model.Cows[i].MorningAmount;
+            afternoon_amount = Model.Cows[i].AfternoonAmount;
+        <tr>
+            <td id="table-header">
+                <labe>@serialnumber</labe>
+            </td>
+            <td id="table-header">
+                @Html.DisplayFor(modelItem => Model.Cows[i].AnimalCode)
+                @Html.HiddenFor(modelItem => Model.Cows[i].AnimalCode)
+                @Html.HiddenFor(modelItem => Model.Cows[i].AnimalID)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.ProductionDate)
+            </td>
+
+            <td>
+                @{
+                   
+                    if (morning_amount > 0)
+                    { @Html.EditorFor(modelItem => Model.Cows[i].MorningAmount, new { htmlAttributes = new { @readonly = "readonly" } });
+                    }
+                    else
+                    { @Html.EditorFor(modelItem => Model.Cows[i].MorningAmount); }
+                }
+
+            </td>
+            <td>
+                @{
+                    if (afternoon_amount > 0)
+                    { @Html.EditorFor(modelItem => Model.Cows[i].AfternoonAmount, new { htmlAttributes = new { @readonly = "readonly" } });
+                    }
+                    else
+                    {@Html.EditorFor(modelItem => Model.Cows[i].AfternoonAmount);}
+                }
+                
+            </td>
+        </tr>
+        }
+        <tr>
+            <td colspan="4"></td>
+            <td>
+                <button type="submit" name="Submit" value="Add" style="width:65%;" class="btn btn-primary btn-block btn-flat">ADD</button>
+            </td>
+        </tr>
+    </table>
+}

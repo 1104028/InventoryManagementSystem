@@ -1,0 +1,83 @@
+﻿@model AgroExpress.DataLayer.ViewModel.AnimalWeightInfoView
+
+@{
+    ViewBag.Title = "Animal Weight Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 style="text-align:center">Update Animal Weight Inforamtion</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    if (ViewBag.success != null)
+    {
+        <script>
+            alert("Animal Weight Inforamtion has been updated Successfully"); // display string message
+        </script>
+    }
+    <style>
+        .register-box {
+            margin-top: 1%;
+        }
+    </style>
+
+    <style>
+
+        input, textarea {
+            display: block;
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            text-align: center;
+        }
+    </style>
+    <div class="register-box">
+        <div class="register-box-body">
+            @Html.HiddenFor(model => model.animalId)
+            <div class="form-group has-feedback">
+                <label>Animal Code Name</label>
+                @Html.EditorFor(model => model.animalCodeName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+
+            </div>
+
+            <div class="form-group has-feedback">
+                <label>Date</label>
+                @Html.DisplayFor(model => model.Date, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+            </div>
+
+
+            <div class="form-group has-feedback">
+                <label>Weight</label>
+                @Html.EditorFor(model => model.Weight, new { htmlAttributes = new { @class = "form-control", Placeholder = "Weight" } })
+                @Html.ValidationMessageFor(model => model.Weight, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="row">
+                <div class="col-xs-8">
+                </div>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button type="submit" class="btn btn-primary btn-block btn-flat">Update</button>
+                </div>
+                <!-- /.col -->
+            </div>
+        </div>
+        <!-- /.form-box -->
+    </div>
+    <!-- /.form-box -->
+}
+
+
+
+
+

@@ -1,0 +1,242 @@
+﻿@model AgroExpress.DataLayer.ViewModel.CowHeatList
+
+@{
+    ViewBag.Title = "CowHeatList";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 style="text-align: center">Cow Heat Summary</h2>
+<br />
+<style>
+
+    input, select {
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+    }
+
+    th, td {
+        text-align: center;
+    }
+</style>
+@using (Html.BeginForm())
+{
+
+    @Html.AntiForgeryToken()
+
+    <script type="text/javascript">
+        $(function () {
+            $("#animalTypeID").change(function () {
+
+                var AnimalTypeID = $("#animalTypeID :selected").val();
+                var url = '../Animal/GetAnimalListForType';
+                var data1 = { "animalTypeID": AnimalTypeID };
+
+                $.post(url, data1, function (data) {
+                    var items = [];
+                    items.push("<option value=" + null + ">" + "Select Animal" + "</option>");
+                    for (var i = 0; i < data.length; i++) {
+
+                        items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                    }
+                    $("#animalID").html(items.join(' '));
+                })
+            });
+        });
+    </script>
+    <div class="row" style="padding-left:1%; padding-right:1%">   
+             
+        <div class="col-md-3">
+            <label>Animal Category</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(model => model.animalTypeID, Model.AnimalTypes, "Select Category", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.animalTypeID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label>Select an Animal</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(model => model.animalID, Model.AnimalCodes, "Select Animal", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.animalID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label>Heat Date Min</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.heatDateMin, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.heatDateMin, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+         <div class="col-md-3">
+            <label>Heat Date Max</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.heatDateMax, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.heatDateMax, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="row"  style="padding-left:1%; padding-right:1%">
+
+          <div class="col-md-3">
+            <label>Next Heat Date Min</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.nextHeatDateMin, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.nextHeatDateMin, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+         <div class="col-md-3">
+            <label>Next Heat Date Max</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.nextHeatDateMax, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.nextHeatDateMax, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label>Expected Delivery Date Min</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.expectedDateMin, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.expectedDateMin, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label>Expected Delivery Date Max</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.expectedDateMax, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.expectedDateMax, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    
+    </div>
+
+    <div class="row"  style="padding-left:2%; padding-right:2%">
+
+          <div class="col-md-4">
+             <label>Injected Date Min</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.injectedDateMin, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.injectedDateMin, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-4">
+             <label>Injected Date Max</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.injectedDateMax, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.injectedDateMax, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <label>&nbsp;</label>
+            <div class="form-group has-feedback">
+                <button type="submit" class="btn btn-primary btn-block btn-flat">Search</button>
+            </div>
+        </div>
+   
+    </div>
+
+
+    <br />
+    <table class="table">
+        <tr>
+            <th>
+                Code Name
+            </th>
+            <th>
+                Heat Date
+            </th>
+            <th>
+                Time
+            </th>
+            <th>
+                Next Heat Date
+            </th>
+            <th>
+                Injected Date
+            </th>
+            <th>
+                Time
+            </th>
+            <th>
+                Summary
+            </th>
+            <th>
+                Expected Delivery
+            </th>
+            <th>
+                Status
+            </th>
+            <th>
+                Actual Delivery
+            </th>
+            @{
+                if (ViewContext.Controller.IsSysAdmin())
+                {
+                    <th>Operation</th>
+                }
+            }
+
+
+        </tr>
+
+        @foreach (var item in Model.heatList)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.animalCodeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.heatDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.heatTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(ModelItem=> item.nextHeatDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.injectedDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.injectedTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.heatSummary)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.expectedDeliveryDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.deliveryStatus)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.actualDeliveryDate)
+                </td>
+                @{
+                    if (ViewContext.Controller.IsSysAdmin())
+                    {
+                        <td>
+                            @Html.ActionLink("Edit", "CowHeatUpdate", new { id = item.animalId, date = item.heatDate })
+                        </td>
+                    }
+                }
+            </tr>
+        }
+
+    </table>
+}

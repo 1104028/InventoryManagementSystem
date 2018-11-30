@@ -1,0 +1,162 @@
+﻿@model AgroExpress.DataLayer.ViewModel.MilkProductionView
+
+@{
+    ViewBag.Title = "Production";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 style="text-align:center">Milk Production Information</h2>
+<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.min.js"></script>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    if (ViewBag.success != null)
+    {
+        <script>
+            alert('@ViewBag.success'); // display string message
+        </script>
+    }
+    <script type="text/javascript">
+
+        function TotalChange(id) {
+            var morning = document.getElementById("Cows_" + id + "__MorningAmount").value;
+
+            if (morning != 0) {
+                $("#" + "Cows_" + id + "__MorningAmount").attr('disabled', 'disabled');
+            }
+            var afternoon = document.getElementById("Cows_" + id + "__AfternoonAmount").value;
+
+
+        }
+
+        function MilkUnit(ele) {
+            var selected = document.getElementById("milkunit");
+
+            var SelectedProduct = selected.options[selected.selectedIndex].value;
+            if (SelectedProduct == 2) {
+                ele.value = parseFloat(ele.value) * 1.04;
+            }
+        }
+    </script>
+
+    <style>
+
+        input, textarea {
+            display: block;
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            text-align: center;
+        }
+    </style>
+    <div class="row" style="padding:2%">
+        <div class="col-md-3"></div>
+        @Html.HiddenFor(model => model.AnimalTypeId)
+        <div class="col-md-3">
+            <label>Select Date</label>
+            <div class="form-group has-feedback">
+
+                @Html.EditorFor(model => model.ProductionDate)
+
+            </div>
+
+        </div>
+        <div class="col-md-3">
+            <label>&nbsp;</label>
+            <div class="form-group has-feedback">
+                <button type="submit" name="Submit" value="ChangeDate" class="btn btn-primary btn-block btn-flat">Change Date</button>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-2">
+            <label>Milk unit</label>
+            <div class="form-group has-feedback">
+                <select class="form-control" id="milkunit" name="milkunit">
+                    <option selected="selected" value="1">ltr</option>
+                    <option value="2">kg</option>
+                </select>
+            </div>
+        </div>
+
+
+    </div>
+
+    int serialnumber = 1;
+    double morning_amount = 0.0;
+    double afternoon_amount = 0.0;
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>&nbsp;</th>
+            <th id="table-header">
+
+                Serial
+            </th>
+            <th id="table-header">
+
+                Animal Code Name
+            </th>
+            <th>
+
+                Date
+            </th>
+            <th>
+
+                Morning Amount
+            </th>
+            <th>
+
+                Afternoon Amount
+            </th>
+        </tr>
+
+        @for (int i = 0; i < Model.Cows.Count; i++)
+        {
+            serialnumber = i + 1;
+            morning_amount = Model.Cows[i].MorningAmount;
+            afternoon_amount = Model.Cows[i].AfternoonAmount;
+            <tr>
+                <td>&nbsp;</td>
+                <td id="table-header">
+                    <labe>@serialnumber</labe>
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => Model.Cows[i].AnimalCode)
+                    @Html.HiddenFor(modelItem => Model.Cows[i].AnimalCode)
+                    @Html.HiddenFor(modelItem => Model.Cows[i].AnimalID)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.ProductionDate)
+                </td>
+
+                <td>
+
+                    @Html.TextBoxFor(modelItem => Model.Cows[i].MorningAmount, new { onchange = "MilkUnit(this)", htmlAttributes = new { @class = "form-control", type = "number" } })
+
+                </td>
+                <td>
+
+                    @Html.TextBoxFor(modelItem => Model.Cows[i].AfternoonAmount, new { onchange = "MilkUnit(this)", htmlAttributes = new { @class = "form-control", type = "number" } })
+
+                </td>
+            </tr>
+        }
+        <tr>
+            <td colspan="5"></td>
+            <td>
+                <button type="submit" name="Submit" value="Add" style="width:100%;" class="btn btn-primary btn-block btn-flat">Update</button>
+            </td>
+        </tr>
+    </table>
+}

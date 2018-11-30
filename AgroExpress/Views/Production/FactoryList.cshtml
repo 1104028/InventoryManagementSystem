@@ -1,0 +1,159 @@
+﻿@model AgroExpress.DataLayer.ViewModel.FactoryProductionList
+@{
+    /**/
+
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<h2 style="text-align:center;">Product List</h2>
+<style>
+
+    input, textarea {
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="col-md-1" style="text-align:right">
+
+        </div>
+        <div class="col-md-3">
+            <label>Product</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(m => m.ProductID, Model.ProductList, "- Product -", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label>Select minimum Date</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.EntryDateMin)
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <label>Select maximum Date</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.EntryDateMax)
+            </div>
+        </div>
+        <div class="col-md-1" style="text-align:right">
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-1" style="text-align:right">
+
+        </div>
+        <div class="col-md-3">
+            <label>Select minimum stock value</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.AmountMin)
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label>Select maximum stock value</label>
+            <div class="form-group has-feedback">
+                
+                @Html.EditorFor(model => model.AmountMax)
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <label>&nbsp;</label>
+            <div class="form-group has-feedback">
+                
+                <button type="submit" name="Submit" value="Show" class="btn btn-primary btn-block btn-flat">Search</button>
+            </div>
+        </div>
+        <div class="col-md-1" style="text-align:right">
+
+        </div>
+    </div>
+    <<div class="row">
+    <br />
+    <br />
+    </div>
+    <div>
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th id="table-header">
+                    Product Name
+                </th>
+                <th id="table-header">
+                    Amount
+                </th>
+                <th id="table-header">
+                    Date
+                </th>
+                <th id="table-header">
+                    Operator name
+                </th>
+
+                @{
+        if (ViewContext.Controller.IsSysAdmin())
+        {
+            <th>Operation</th>
+}
+                }
+            </tr>
+
+            @foreach (var item in Model.SearchResult)
+            {
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td id="table-header">
+                    @Html.HiddenFor(modelItem => item.PKProductionId)
+                    @Html.DisplayFor(modelItem => item.product.ProductName)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.Amount)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.OperatorName)
+                </td>
+                @{
+        if (ViewContext.Controller.IsSysAdmin())
+        {
+            <td id="table-header">
+                @Html.ActionLink(
+"Delete",
+"ProductionDelete",
+new { id = item.PKProductionId },
+new { onclick = "return confirm('Are you sure you wish to disable this customer?');" })
+
+
+            </td>
+}
+                }
+
+
+            </tr>
+            }
+
+        </table>
+    </div>
+}
+

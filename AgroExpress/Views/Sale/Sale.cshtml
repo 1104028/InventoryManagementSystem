@@ -1,0 +1,143 @@
+﻿@model AgroExpress.DataLayer.Models.Sale
+
+@{
+    /**/
+
+    ViewBag.Title = "Production";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<script src="~/Scripts/jquery.min.js"></script>
+<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />
+<h2 style="text-align:center">Product Sale</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row" style="padding:2%">
+        <script type="text/javascript">
+
+            function TotalChange(id) {
+
+                var rate = document.getElementById("productsale_" + id + "__Rate").value;
+                var amount = document.getElementById("productsale_" + id + "__Amount").value;
+                console.log(id);
+                console.log(rate * amount);
+                document.getElementById("productsale_" + id + "__Total").value = rate * amount;
+                var Stotal = 0.0;
+                for (i = 0; i < 10; i++) {
+                    var values = document.getElementById("productsale_" + i + "__Total").value;
+                    if (values != null)
+                        Stotal = Number(Stotal) + Number(values);
+                }
+                document.getElementById("TotalAmount").value = Stotal;
+
+            }
+
+
+            $(function () {
+                $("#DeliveryAreaID").change(function () {
+
+                    console.log('Inside');
+                    var AreaName = $("#DeliveryAreaID :selected").text();
+                    var saleDate = $('#SaleDate').val();
+                    var url = '../Milk/CustomerList';
+                    var data1 = { "DeliveryAreaName": AreaName, "Date": saleDate };
+
+                    $.post(url, data1, function (data) {
+                        var items = [];
+                        items.push("<option value=" + 0 + ">" + "- Please select a customer -" + "</option>");
+                        for (var i = 0; i < data.length; i++) {
+
+                            items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                        }
+
+                        $("#Customer_Id").html(items.join(' '));
+
+
+                    })
+                });
+
+            });
+
+            $(document).ready(function () {
+                var counter = 0;
+
+                $("#addrow").on("click", function () {
+                    var newRow = $("<tr>");
+                    var cols = "";
+
+                    cols += '<td><input type="text" class="form-control" name="name' + counter + '"/></td>';
+                    cols += '<td><input type="text" class="form-control" name="mail' + counter + '"/></td>';
+                    cols += '<td><input type="text" class="form-control" name="phone' + counter + '"/></td>';
+
+                    cols += '<td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>';
+                    newRow.append(cols);
+                    $("table.order-list").append(newRow);
+                    counter++;
+                });
+
+
+
+                $("table.order-list").on("click", ".ibtnDel", function (event) {
+                    $(this).closest("tr").remove();
+                    counter -= 1
+                });
+
+
+            });
+
+
+
+            function calculateRow(row) {
+                var price = +row.find('input[name^="price"]').val();
+
+            }
+
+            function calculateGrandTotal() {
+                var grandTotal = 0;
+                $("table.order-list").find('input[name^="price"]').each(function () {
+                    grandTotal += +$(this).val();
+                });
+                $("#grandtotal").text(grandTotal.toFixed(2));
+            }
+
+        </script>
+
+        <div class="container">
+            <table id="myTable" class=" table order-list">
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Gmail</td>
+                        <td>Phone</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="col-sm-4">
+                            <input type="text" name="name" class="form-control" />
+                        </td>
+                        <td class="col-sm-4">
+                            <input type="email" name="mail" class="form-control" />
+                        </td>
+                        <td class="col-sm-3">
+                            <input type="text" name="phone" class="form-control" />
+                        </td>
+                        <td class="col-sm-2">
+                            <a class="deleteRow"></a>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5" style="text-align: left;">
+                            <input type="button" class="btn btn-lg btn-block " id="addrow" value="Add Row" />
+                        </td>
+                    </tr>
+                    <tr></tr>
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+}

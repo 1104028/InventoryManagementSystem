@@ -1,0 +1,138 @@
+﻿@model AgroExpress.DataLayer.ViewModel.LoginView
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Agro Express | Log in</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Theme style -->
+    @*<link rel="stylesheet" href="AdminLTE.min.css">*@
+    <link href="~/Content/AdminLTE.min.css" rel="stylesheet" />
+
+</head>
+<body class="hold-transition login-page">
+    <div class="login-box">
+        <div class="login-logo">
+            <b>Agro Express</b>
+        </div>
+        <!-- /.login-logo -->
+        <div class="login-box-body">
+            <p class="login-box-msg">Welcome</p>
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-group has-feedback">
+                    @*<input class="form-control" placeholder="User Name">*@
+                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control", placeholder = "User Name" } })
+                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+
+                </div>
+                <div class="form-group has-feedback">
+                    @*<input type="password" class="form-control" placeholder="Password">*@
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", placeholder = "Password" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+
+                </div>
+                <div class="row">
+                    <div class="col-xs-1"></div>
+                    <div class="col-xs-6">
+                        <div class="checkbox icheck">
+                            @Html.EditorFor(model => model.RememberMe) Remember Me
+                            @Html.ValidationMessageFor(model => model.RememberMe, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-xs-4">
+                        @*<button type="submit" class="btn btn-primary btn-block btn-flat">Log In</button>*@
+                        <input type="submit" value="Log In" class="btn btn-primary btn-block btn-flat" />
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-xs-1"></div>
+                </div>
+
+            }
+
+        </div>
+        <!-- /.login-box-body -->
+    </div>
+    <!-- /.login-box -->
+    <!-- jQuery 3 -->
+
+    <script src="~/Content/jquery.min.js"></script>
+    <!-- Bootstrap 3.3.7 -->
+
+    <script src="~/Content/bootstrap.min.js"></script>
+    <!-- iCheck -->
+    <script src="../../plugins/iCheck/icheck.min.js"></script>
+
+</body>
+</html>
+
+
+
+
+
+@*<html>
+    <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Login</title>
+    </head>
+    <body>
+    <h4>@ViewBag.message</h4>
+    @using (Html.BeginForm())
+    {
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+    <h4>UserLogin</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+    @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+    </div>
+    </div>
+
+    <div class="form-group">
+    @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+    </div>
+    </div>
+
+    <div class="form-group">
+    @Html.LabelFor(model => model.RememberMe, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+    <div class="checkbox">
+    @Html.EditorFor(model => model.RememberMe)
+    @Html.ValidationMessageFor(model => model.RememberMe, "", new { @class = "text-danger" })
+    </div>
+    </div>
+    </div>
+
+    <div class="form-group">
+    <div class="col-md-offset-2 col-md-10">
+    <input type="submit" value="Save" class="btn btn-default" />
+    </div>
+    </div>
+    </div>
+    }
+
+    <div>
+    @Html.ActionLink("Back to List", "Index")
+    </div>
+    </body>
+    </html>*@

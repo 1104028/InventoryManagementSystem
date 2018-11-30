@@ -1,0 +1,191 @@
+﻿@model AgroExpress.DataLayer.ViewModel.AnimalWeightList
+
+@{
+    ViewBag.Title = "Animal Weight List";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />
+<h2 id="title">Animal Weight List</h2>
+<br />
+<style>
+
+    input, select {
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <script type="text/javascript">
+        $(function () {
+            $("#AnimalTypeID").change(function () {
+
+                var AnimalTypeID = $("#AnimalTypeID :selected").val();
+                var url = '../Animal/GetAnimalListForType';
+                var data1 = { "animalTypeID": AnimalTypeID };
+
+                $.post(url, data1, function (data) {
+                    var items = [];
+                    items.push("<option value=" + 0 + ">" + "Select Animal" + "</option>");
+                    for (var i = 0; i < data.length; i++) {
+
+                        items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                    }
+                    $("#AnimalID").html(items.join(' '));
+                })
+            });
+        });
+    </script>
+    <div class="row">
+        <div class="col-md-2">
+
+        </div>
+        <div class="col-md-2">
+            <label>Animal Category</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(model => model.AnimalTypeID, Model.AnimalTypes, "Select Category", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AnimalTypeID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <label>Select an Animal</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(model => model.AnimalID, Model.AnimalCodes, "Select Animal", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AnimalID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <label>Gender</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(model => model.Gender, Model.GenderOptions, "Gender", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.AnimalTypeID, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <label>Date From</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.DateMin, new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(model => model.DateMin, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-2">
+
+        </div>
+    </div>
+
+
+    <div class="row">
+
+        <div class="col-md-2">
+
+        </div>
+        <div class="col-md-2">
+            <label>Date To</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.DateMax, new { @class = "form-control", type = "date" })
+                @Html.ValidationMessageFor(model => model.DateMax, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <label>Minimum Weight</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.weightMin, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.weightMin, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <label>Maximum Weight</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(model => model.weightMax, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.weightMax, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <label>&nbsp;</label>
+            <div class="form-group has-feedback">
+                <button type="submit" class="btn btn-primary btn-block btn-flat">Search</button>
+            </div>
+        </div>
+
+        <div class="col-md-2">
+
+        </div>
+
+    </div>
+    <br />
+
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th id="table-header">
+                Category
+            </th>
+            <th id="table-header">
+                Animal Code Name
+            </th>
+            <th id="table-header">
+                Weighting Date
+            </th>
+            <th id="table-header">
+                Gender
+            </th>
+            <th id="table-header">
+                Weight
+            </th>
+            @{
+                if (ViewContext.Controller.IsSysAdmin())
+                {
+                    <th>Operation</th>
+                }
+            }
+        </tr>
+
+        @foreach (var item in Model.searchResult)
+        {
+            <tr>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.animalType)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.animalCodeName)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.gender)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.Weight)
+                </td>
+                @{
+                    if (ViewContext.Controller.IsSysAdmin())
+                    {
+                        <td id="table-header">
+                            @Html.ActionLink("Edit", "WeightEdit", new { id = item.animalId, date = item.Date })
+                        </td>
+                    }
+                }
+
+            </tr>
+        }
+
+    </table>
+}
+

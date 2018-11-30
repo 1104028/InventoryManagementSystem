@@ -1,0 +1,261 @@
+﻿@model  AgroExpress.DataLayer.ViewModel.BillHistory
+
+@{
+    ViewBag.Title = "Sale Inforamtion";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@*<link href="~/Content/ListStylesRuku.css" rel="stylesheet" />*@
+<h2 style="text-align:center">Bill History</h2>
+
+<p style=" padding-left: 4%;
+    padding-bottom: 1%;
+    padding-top: 1%;
+    font-weight: 800;">
+
+</p>
+<style>
+
+    input {
+        display: block;
+        width: 100%;
+        height: 34px;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #555;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #ccc;
+    }
+
+    th, td {
+        text-align: center;
+    }
+</style>
+<script src="~/Scripts/jquery.min.js"></script>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <script type="text/javascript">
+            $(function () {
+                $("#SalePointId").change(function () {
+
+                    var SalePointName = $("#SalePointId :selected").text();
+                    var url = '../Customer/SalePointList';
+                    var data1 = { "SalePointName": SalePointName };
+
+                    $.post(url, data1, function (data) {
+                        var items = [];
+                        items.push("<option value=>" + "- Please select a Area -" + "</option>");
+                        for (var i = 0; i < data.length; i++) {
+
+                            items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                        }
+
+                        $("#AreaId").html(items.join(' '));
+
+
+                    })
+                });
+
+            });
+
+            $(function () {
+                $("#AreaId").change(function () {
+
+                    var AreaName = $("#AreaId :selected").text();
+                    var url = '../Customer/AreaList';
+                    var data1 = { "AreaName": AreaName };
+
+                    $.post(url, data1, function (data) {
+                        var items = [];
+                        items.push("<option value=>" + "- Please select a Sub Area -" + "</option>");
+                        for (var i = 0; i < data.length; i++) {
+
+                            items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                        }
+
+                        $("#SubAreaId").html(items.join(' '));
+
+
+                    })
+                });
+
+            });
+
+            $(function () {
+                $("#SubAreaId").change(function () {
+
+                    var subareaid = $("#SubAreaId :selected").val();
+                    var url = '../Customer/CustomerList';
+                    var data1 = { "SubAreaId": subareaid };
+
+                    $.post(url, data1, function (data) {
+                        var items = [];
+                        items.push("<option value=>" + "- Please select a Customer -" + "</option>");
+                        for (var i = 0; i < data.length; i++) {
+
+                            items.push("<option value=" + data[i].Value + ">" + data[i].Text + "</option>");
+                        }
+
+                        $("#CustomerID").html(items.join(' '));
+
+
+                    })
+                });
+
+            });
+
+        </script>
+        <div class="col-md-1">
+
+        </div>
+        <div class="col-md-3">
+            <label>Sale Point</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(m => m.SalePointId, Model.salepointlist, "- Please select a sale point -", new { @class = "form-control" })
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <label>Area</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(m => m.AreaId, Model.arealist, "- Please select a area -", new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label>Sub Area</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(m => m.SubAreaId, Model.subarealist, "- Please select a sub area -", new { @class = "form-control" })
+            </div>
+        </div>
+
+
+        <div class="col-md-1">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1">
+
+        </div>
+        <div class="col-md-3">
+            <label>Customers</label>
+            <div class="form-group has-feedback">
+                @Html.DropDownListFor(m => m.CustomerID, Model.selectedcustomerlist, "- Please select a Customer -", new { @class = "form-control" })
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <label>Sart Date</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(m => m.EntryDateMin, new { @class = "form-control", type = "date" })
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label>End Date</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(m => m.EntryDateMax, new { @class = "form-control", type = "date" })
+            </div>
+        </div>
+
+
+        <div class="col-md-1">
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-1">
+
+        </div>
+        <div class="col-md-3">
+            <label>Bill Amount Minimum</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(m => m.PaidAmountVMin, new { @class = "form-control", type = "number" })
+            </div>
+        </div>
+
+
+        <div class="col-md-3">
+            <label>Bill Amount Maximum</label>
+            <div class="form-group has-feedback">
+                @Html.EditorFor(m => m.PaidAmountVMax, new { @class = "form-control", type = "number" })
+            </div>
+        </div>
+
+        <div class="col-md-3">
+
+        </div>
+
+        <div class="col-md-1">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+
+        </div>
+        <div class="col-md-4">
+            <div class="form-group has-feedback">
+
+                <button type="submit" name="Submit" value="Date" class="btn btn-primary btn-block btn-flat">Search</button>
+            </div>
+        </div>
+        <div class="col-md-4">
+
+        </div>
+    </div>
+    <br />
+    <table class="table table-bordered table-striped">
+        <tr>
+
+            <th id="table-header">
+                Bill Date
+            </th>
+            <th id="table-header">
+                Customer Name
+            </th>
+           
+            <th id="table-header">
+                Paid Amount
+            </th>
+
+            <th id="table-header">
+                Operator Name
+            </th>
+
+        </tr>
+
+        @foreach (var item in Model.allbills)
+        {
+            <tr>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.DateTime)
+                </td>
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.CustomerName)
+                </td>
+                
+
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.BillPaid)
+                </td>
+
+               
+                <td id="table-header">
+                    @Html.DisplayFor(modelItem => item.OperatorName)
+                </td>
+
+            </tr>
+        }
+
+    </table>
+
+}
